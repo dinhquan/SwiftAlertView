@@ -13,6 +13,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios
   s.source       = { :git => "https://github.com/dinhquan/SwiftAlertView.git", :tag => "1.0.1" }
   s.source_files  = 'SwiftAlertView', 'SwiftAlertView/**/*.swift'
-  s.requires_arc = true
+  s.ios.deployment_target = "8.0"
 
 end
