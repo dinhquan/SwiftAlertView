@@ -14,7 +14,7 @@ With SwiftAlertView, you can easily make your desired Alert View in some lines o
 #### Using CocoaPods
 Just add the following line in to your pod file:
 ```
-pod 'SwiftAlertView', '~> 1.0.0'
+pod 'SwiftAlertView', '~> 1.0.2'
 ```
 #### Manually
 Drag and drop the file named ```SwiftAlertView``` in your project and you are done.
