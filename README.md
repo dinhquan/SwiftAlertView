@@ -21,16 +21,17 @@ Drag and drop the file named ```SwiftAlertView``` in your project and you are do
 
 ## Highlight Features
 
-- Initialize alert with a custom view
-- Closure and callbacks for handling button touched event
-- Change alert appearance: background color or background image, border radius
-- Change title font, color, position
-- Change message font, color, position
-- Change buttons font, color, position
-- Change separator color, hidden or not
-- Change alert appear behaviour and disappear behaviour
+- Initialize the alert view with a custom view
+- Initialize the alert view with a xib file
+- Closure and callbacks for handling button touched events
+- Change the alert appearance: background color or background image, border radius
+- Change the title appearance: font, color, margin, spacing, visibility
+- Change the message appearance: font, color, margin, spacing, visibility
+- Change the button appearance: font, color
+- Change the separator appearance: color, visibility
+- Change the alert appear behaviour and disappear behaviour
 - APIs are exactly same as UIAlertView
-- And much more ...
+- And many more ...
 
 ## Usage
 
@@ -42,6 +43,9 @@ let alertView = SwiftAlertView(title: "Sample Title", message: "Sample Message",
 
 // Initialize with a custom view
 let alertView = SwiftAlertView(contentView: customView, delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
+
+// Initialize with nib name
+let alertView = SwiftAlertView(nibName: "CustomView", delegate: self, cancelButtonTitle: "I love this feature")
 
 ```
 
