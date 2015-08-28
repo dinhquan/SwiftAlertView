@@ -1,7 +1,7 @@
 SwiftAlertView
 ===========
 
-A powerful customizable Alert View library written in Swift
+A powerful customizable Alert View library written in Swift.
 
 SwiftAlertView is the best alternative for UIKit's UIAlertView and UIAlertController.
 With SwiftAlertView, you can easily make your desired Alert View in some lines of code.
@@ -21,16 +21,16 @@ Drag and drop the file named ```SwiftAlertView``` in your project and you are do
 
 ## Highlight Features
 
-- Initialize the alert view with a custom view
-- Initialize the alert view with a xib file
-- Closure and callbacks for handling button touched events
-- Change the alert appearance: background color or background image, border radius
-- Change the title appearance: font, color, margin, spacing, visibility
-- Change the message appearance: font, color, margin, spacing, visibility
-- Change the button appearance: font, color
-- Change the separator appearance: color, visibility
-- Change the alert appear behaviour and disappear behaviour
-- APIs are exactly same as UIAlertView
+- Initialize the alert view with a custom view.
+- Initialize the alert view with a xib file.
+- Closure and callbacks for handling button touched events.
+- Change the alert appearance: background color or background image, border radius.
+- Change the title appearance: font, color, margin, spacing, visibility.
+- Change the message appearance: font, color, margin, spacing, visibility.
+- Change the button appearance: font, color.
+- Change the separator appearance: color, visibility.
+- Change the alert appear behaviour and disappear behaviour.
+- APIs are exactly same as UIAlertView.
 - And many more ...
 
 ## Usage
@@ -68,7 +68,7 @@ alertView.dismiss
 ```swift
 
 alertView.clickedButtonAction = {(buttonIndex) -> Void in
-  // println("Button Clicked At Index \(buttonIndex)")
+  println("Button Clicked At Index \(buttonIndex)")
 }
 alertView.clickedCancelButtonAction = {
   println("Cancel Button Clicked")
