@@ -52,7 +52,6 @@ let alertView = SwiftAlertView(contentView: customView, delegate: self, cancelBu
 alertView.show()
 
 // Show at center of a view
-// Always show at center
 alertView.show(view)
 
 // Programmatically dismiss the alert view
