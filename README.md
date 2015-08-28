@@ -59,7 +59,7 @@ alertView.show()
 alertView.show(view)
 
 // Programmatically dismiss the alert view
-alertView.dismiss
+alertView.dismiss()
 
 ```
 
