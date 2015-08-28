@@ -93,14 +93,14 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
             view.addSubview(label)
             view.backgroundColor = UIColor.yellowColor()
             
-            var alertView = SwiftAlertView(contentView: view, delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
+            let alertView = SwiftAlertView(contentView: view, delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
             alertView.show()
             
             break
         case 4:
             
             let alertView = SwiftAlertView(nibName: "CustomView", delegate: self, cancelButtonTitle: "I love this feature")
-            alertView.show()
+            alertView.show(view)
             
             break
         case 5:
