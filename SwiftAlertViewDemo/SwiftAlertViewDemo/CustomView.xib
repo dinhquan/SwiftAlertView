@@ -7,11 +7,11 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="280" height="193"/>
+            <rect key="frame" x="0.0" y="0.0" width="280" height="250"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="This is the custom view loaded from xib file." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aKF-8k-FCD">
-                    <rect key="frame" x="40" y="34" width="205" height="124"/>
+                    <rect key="frame" x="38" y="81" width="205" height="88"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
                     <color key="textColor" red="0.043137254899999998" green="0.62352941179999999" blue="0.82352941180000006" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
@@ -19,7 +19,7 @@
             </subviews>
             <color key="backgroundColor" red="1" green="0.98896059782608692" blue="0.96187160326086951" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="225" y="179.5"/>
+            <point key="canvasLocation" x="225" y="208"/>
         </view>
     </objects>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

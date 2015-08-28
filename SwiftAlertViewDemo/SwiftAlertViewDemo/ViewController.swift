@@ -44,11 +44,15 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
         case 0:
             var alertView = SwiftAlertView(title: nil, message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", delegate: nil, cancelButtonTitle: "Cancel")
             alertView.cancelButtonIndex = 1
+            alertView.appearanceType = SwiftAlertViewAppearanceType.FlyFromTop
+            alertView.disappearanceType = SwiftAlertViewDisappearanceType.FlyToRight
+
             alertView.show()
             
             break
         case 1:
             var alertView = SwiftAlertView(title: "Lorem ipsum ", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", delegate: nil, cancelButtonTitle: "Cancel", otherButtonTitles: "Button 1", "Button 2", "Button 3")
+            alertView.buttonTitleColor = UIColor ( red: 0.8764, green: 0.5, blue: 0.3352, alpha: 1.0 )
             alertView.show()
             
             break
