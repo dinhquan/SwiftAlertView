@@ -14,8 +14,13 @@ With SwiftAlertView, you can easily make your desired Alert View in some lines o
 #### Using CocoaPods
 Just add the following line in to your pod file:
 ```
-pod 'SwiftAlertView', '~> 1.0.2'
+pod 'SwiftAlertView', '~> 1.2.0'
 ```
+Use version ```1.1.0``` For compatible with Swift 1.x
+```
+pod 'SwiftAlertView', '~> 1.1.0'
+```
+
 #### Manually
 Drag and drop the file named ```SwiftAlertView``` in your project and you are done.
 
@@ -60,6 +65,20 @@ alertView.show(view)
 
 // Programmatically dismiss the alert view
 alertView.dismiss()
+
+```
+
+#### Use static method to show alert
+
+```swift
+SwiftAlertView.show(title: "Lorem ipsum", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: ["OK"], configureAppearance: { (alertView: SwiftAlertView) -> (Void) in
+    
+    // customize alert view appearance here
+    alertView.backgroundColor = UIColor ( red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1.0 )
+    
+    }, clickedButtonAction: { (buttonIndex) -> (Void) in
+        print("Button Clicked At Index \(buttonIndex)\n")
+})
 
 ```
 
@@ -121,7 +140,7 @@ var dismissOnOtherButtonClicked: Bool! // default is true, if you want the alert
 var highlightOnButtonClicked: Bool! // default is true
 var dimBackgroundWhenShowing: Bool! // default is true
 var dimAlpha: Double! // default is 0.2
-var dismissOnOutsideClicked: Bool! // default is true
+var dismissOnOutsideClicked: Bool! // default is false
 
 var appearTime: Double! // default is 0.2 second
 var disappearTime: Double! // default is 0.1 second
@@ -130,11 +149,11 @@ var appearType: SwiftAlertViewAppearType! // to change the appear type
 var disappearType: SwiftAlertViewDisappearType! // to change the disappear type
 
 // customize the margin & spacing of title & message
-var titleSideMargin: Double!
-var messageSideMargin: Double!
-var titleTopMargin: Double!
-var titleToMessageSpacing: Double!
-var messageBottomMargin: Double!
+var titleSideMargin: Double!  // default is 20 px
+var messageSideMargin: Double!  // default is 20 px
+var titleTopMargin: Double!  // default is 20 px
+var messageBottomMargin: Double! // default is 20 px
+var titleToMessageSpacing: Double! // default is 10 px
 
 // closure for handling button clicked action
 var clickedButtonAction:((buttonIndex: Int) -> (Void))? // all buttons
