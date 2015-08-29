@@ -54,7 +54,7 @@ class SwiftAlertView: UIView {
     var highlightOnButtonClicked: Bool! // default is true
     var dimBackgroundWhenShowing: Bool! // default is true
     var dimAlpha: Double! // default is 0.2
-    var dismissOnOutsideClicked: Bool! // default is true
+    var dismissOnOutsideClicked: Bool! // default is false
     
     var appearTime: Double! // default is 0.2 second
     var disappearTime: Double! // default is 0.1 second
@@ -63,12 +63,12 @@ class SwiftAlertView: UIView {
     var disappearType: SwiftAlertViewDisappearType! // to change the disappear type
     
     // customize the margin & spacing of title & message
-    var titleSideMargin: Double!
-    var messageSideMargin: Double!
-    var titleTopMargin: Double!
-    var titleToMessageSpacing: Double!
-    var messageBottomMargin: Double!
-    
+    var titleSideMargin: Double!  // default is 20 px
+    var messageSideMargin: Double!  // default is 20 px
+    var titleTopMargin: Double!  // default is 20 px
+    var messageBottomMargin: Double! // default is 20 px
+    var titleToMessageSpacing: Double! // default is 10 px
+
     // closure for handling button clicked action
     var clickedButtonAction:((buttonIndex: Int) -> (Void))? // all buttons
     var clickedCancelButtonAction:((Void) -> (Void))? // for cancel button
@@ -88,7 +88,6 @@ class SwiftAlertView: UIView {
     
     // MARK: Constants
     
-    private let kCancelButtonTag = 2810
     private let kSeparatorWidth = 0.5
     private let kDefaultWidth = 270.0
     private let kDefaultHeight = 144.0
@@ -97,9 +96,9 @@ class SwiftAlertView: UIView {
     private let kDefaultButtonHeight = 44.0
     private let kDefaultCornerRadius = 8.0
     private let kDefaultTitleTopMargin = 20.0
-    private let kDefaultTitleToMessageSpacing = 20.0
+    private let kDefaultTitleToMessageSpacing = 10.0
     private let kDefaultMessageBottomMargin = 20.0
-    private let kDefaultDimAlpha = 0.2
+    private let kDefaultDimAlpha = 0.4
     
     
     // MARK: Private Properties
@@ -129,6 +128,11 @@ class SwiftAlertView: UIView {
         setUp(title, message: message, contentView: nil, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil)
     }
     
+    init(title: String?, message: String?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?) {
+        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+        setUp(title, message: message, contentView: nil, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
+    }
+    
     // init with custom content view
     init(contentView: UIView!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: String...) {
         super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
@@ -140,6 +144,12 @@ class SwiftAlertView: UIView {
         super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
         
         setUp(nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil)
+    }
+    
+    init(contentView: UIView!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?) {
+        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+        
+        setUp(nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
     }
     
     // init with custom nib file from main bundle, make sure this file exists
@@ -156,6 +166,13 @@ class SwiftAlertView: UIView {
         let contentView = NSBundle.mainBundle().loadNibNamed(nibName, owner: nil, options: nil).first as? UIView
 
         setUp(nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil)
+    }
+    
+    init(nibName: String!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?) {
+        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+        
+        let contentView = NSBundle.mainBundle().loadNibNamed(nibName, owner: nil, options: nil).first as? UIView
+        setUp(nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
     }
     
     
@@ -188,7 +205,7 @@ class SwiftAlertView: UIView {
             dimView = UIView(frame: window.bounds)
             dimView!.backgroundColor = UIColor(white: 0, alpha: CGFloat(dimAlpha))
             view.addSubview(dimView!)
-            var recognizer = UITapGestureRecognizer(target: self, action: Selector("outsideClicked:"))
+            let recognizer = UITapGestureRecognizer(target: self, action: Selector("outsideClicked:"))
             dimView!.addGestureRecognizer(recognizer)
         }
         
@@ -220,7 +237,7 @@ class SwiftAlertView: UIView {
                 }
             })
         } else if appearType == SwiftAlertViewAppearType.FlyFromTop {
-            var tempFrame = self.frame
+            let tempFrame = self.frame
             self.frame = CGRectMake(self.frame.origin.x, 0 - self.frame.size.height - 10, self.frame.size.width, self.frame.size.height)
             UIView.animateWithDuration(appearTime, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
                 self.frame = tempFrame
@@ -230,7 +247,7 @@ class SwiftAlertView: UIView {
                     }
             })
         } else if appearType == SwiftAlertViewAppearType.FlyFromLeft {
-            var tempFrame = self.frame
+            let tempFrame = self.frame
             self.frame = CGRectMake(0 - self.frame.size.width - 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height)
             UIView.animateWithDuration(appearTime, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
                 self.frame = tempFrame
@@ -345,7 +362,7 @@ class SwiftAlertView: UIView {
         dimBackgroundWhenShowing = true
         dismissOnOtherButtonClicked = true
         highlightOnButtonClicked = true
-        dismissOnOutsideClicked = true
+        dismissOnOutsideClicked = false
         hideSeparator = false
         cornerRadius = kDefaultCornerRadius
         cancelButtonIndex = 0
@@ -394,7 +411,7 @@ class SwiftAlertView: UIView {
     }
     
     private func setUpDefaultAppearance() {
-        self.backgroundColor = UIColor(red: 246.0/255, green: 1, blue: 1, alpha: 1)
+        self.backgroundColor = UIColor(red: 245.0/255, green: 245.0/255, blue: 245.0/255, alpha: 1)
         if let backgroundImage = backgroundImage {
             backgroundImageView = UIImageView(frame: self.bounds)
             backgroundImageView?.image = backgroundImage
@@ -510,7 +527,7 @@ class SwiftAlertView: UIView {
     
     func buttonClicked(button: UIButton) {
         if (highlightOnButtonClicked == true) {
-            var originColor = button.backgroundColor?.colorWithAlphaComponent(0)
+            let originColor = button.backgroundColor?.colorWithAlphaComponent(0)
             button.backgroundColor = button.backgroundColor?.colorWithAlphaComponent(0.1)
             let delayTime = dispatch_time(DISPATCH_TIME_NOW,
                 Int64(0.2 * Double(NSEC_PER_SEC)))
@@ -570,6 +587,16 @@ class SwiftAlertView: UIView {
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
+extension SwiftAlertView {
+    static func show(#title: String?, message: String?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?, configureAppearance:(alertView: SwiftAlertView)->(Void), clickedButtonAction:(buttonIndex: Int)->(Void)){
+        let alertView = SwiftAlertView(title: title, message: message, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
+        alertView.handleClickedButtonAction(clickedButtonAction)
+        configureAppearance(alertView: alertView)
+        alertView.show()
     }
 }
 

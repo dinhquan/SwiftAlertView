@@ -16,7 +16,7 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        demoTitles = ["No Title", "More Than Two Buttons", "Customize Font & Color", "Custom Content View", "Init From Nib File", "Customize Appearance Type"]
+        demoTitles = ["No Title", "More Than Two Buttons", "Customize Font & Color", "Custom Content View", "Init From Nib File", "Customize Appearance Type", "Static Method"]
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,15 +28,15 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
     // MARK: SwiftAlertViewDelegate
     
     func alertView(alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        println("Button Clicked At Index \(buttonIndex)")
+        print("Button Clicked At Index \(buttonIndex)\n")
     }
     
     func didPresentAlertView(alertView: SwiftAlertView) {
-        println("Did Present Alert View")
+        print("Did Present Alert View\n")
     }
     
     func didDismissAlertView(alertView: SwiftAlertView) {
-        println("Did Dismiss Alert View")
+        print("Did Dismiss Alert View\n")
     }
     
 
@@ -48,13 +48,13 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
         case 0:
             let alertView = SwiftAlertView(title: nil, message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
             alertView.clickedButtonAction = {(buttonIndex) -> Void in
-                // println("Button Clicked At Index \(buttonIndex)")
+                print("Button Clicked At Index \(buttonIndex)\n")
             }
             alertView.clickedCancelButtonAction = {
-                println("Cancel Button Clicked")
+                print("Cancel Button Clicked\n")
             }
             alertView.clickedOtherButtonAction = {(buttonIndex) -> Void in
-                println("Other Button Clicked At Index \(buttonIndex)")
+                print("Other Button Clicked At Index \(buttonIndex)")
             }
             alertView.show()
             
@@ -98,9 +98,8 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
             
             break
         case 4:
-            
             let alertView = SwiftAlertView(nibName: "CustomView", delegate: self, cancelButtonTitle: "I love this feature")
-            alertView.show(view)
+            alertView.show()
             
             break
         case 5:
@@ -111,6 +110,16 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
             alertView.disappearTime = 1
             
             alertView.show()
+            break
+        case 6:
+            SwiftAlertView.show(title: "Lorem ipsum", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: ["OK"], configureAppearance: { (alertView: SwiftAlertView) -> (Void) in
+                
+                // customize alert view appearance here
+                alertView.backgroundColor = UIColor ( red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1.0 )
+                
+                }, clickedButtonAction: { (buttonIndex) -> (Void) in
+                    print("Button Clicked At Index \(buttonIndex)\n")
+            })
             break
         default:
             break
