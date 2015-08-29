@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, SwiftAlertViewDelegate {
+class ViewController: UITableViewController, SwiftAlertViewDelegate {
 
     var demoTitles: [String]!
 
@@ -28,15 +28,15 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
     // MARK: SwiftAlertViewDelegate
     
     func alertView(alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        print("Button Clicked At Index \(buttonIndex)\n")
+        print("Button Clicked At Index \(buttonIndex)\n", appendNewline: false)
     }
     
     func didPresentAlertView(alertView: SwiftAlertView) {
-        print("Did Present Alert View\n")
+        print("Did Present Alert View\n", appendNewline: false)
     }
     
     func didDismissAlertView(alertView: SwiftAlertView) {
-        print("Did Dismiss Alert View\n")
+        print("Did Dismiss Alert View\n", appendNewline: false)
     }
     
 
@@ -48,13 +48,13 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
         case 0:
             let alertView = SwiftAlertView(title: nil, message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
             alertView.clickedButtonAction = {(buttonIndex) -> Void in
-                print("Button Clicked At Index \(buttonIndex)\n")
+                print("Button Clicked At Index \(buttonIndex)\n", appendNewline: false)
             }
             alertView.clickedCancelButtonAction = {
-                print("Cancel Button Clicked\n")
+                print("Cancel Button Clicked\n", appendNewline: false)
             }
             alertView.clickedOtherButtonAction = {(buttonIndex) -> Void in
-                print("Other Button Clicked At Index \(buttonIndex)")
+                print("Other Button Clicked At Index \(buttonIndex)", appendNewline: false)
             }
             alertView.show()
             
@@ -118,7 +118,7 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
                 alertView.backgroundColor = UIColor ( red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1.0 )
                 
                 }, clickedButtonAction: { (buttonIndex) -> (Void) in
-                    print("Button Clicked At Index \(buttonIndex)\n")
+                    print("Button Clicked At Index \(buttonIndex)\n", appendNewline: false)
             })
             break
         default:
@@ -127,7 +127,7 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DemoCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("DemoCell", forIndexPath: indexPath) as UITableViewCell
         cell.textLabel?.text = demoTitles[indexPath.row]
         
         return cell

@@ -200,9 +200,8 @@ class SwiftAlertView: UIView {
         
         self.frame = CGRect(x: (Double(view.frame.size.width) - viewWidth)/2, y: (Double(view.frame.size.height) - viewHeight)/2, width: viewWidth, height: viewHeight)
 
-        let window = UIApplication.sharedApplication().windows.last as! UIView
         if dimBackgroundWhenShowing == true {
-            dimView = UIView(frame: window.bounds)
+            dimView = UIView(frame: view.bounds)
             dimView!.backgroundColor = UIColor(white: 0, alpha: CGFloat(dimAlpha))
             view.addSubview(dimView!)
             let recognizer = UITapGestureRecognizer(target: self, action: Selector("outsideClicked:"))
@@ -395,14 +394,14 @@ class SwiftAlertView: UIView {
         }
         
         if let cancelTitle = cancelButtonTitle {
-            var cancelButton = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+            let cancelButton = UIButton(type: UIButtonType.Custom)
             cancelButton.setTitle(cancelTitle, forState: UIControlState.Normal)
             buttons.append(cancelButton)
             addSubview(cancelButton)
         }
         
         for otherTitle in otherButtonTitles {
-            var otherButton = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+            let otherButton = UIButton(type: UIButtonType.Custom)
             
             otherButton.setTitle(otherTitle, forState: UIControlState.Normal)
             buttons.append(otherButton)
@@ -592,7 +591,8 @@ class SwiftAlertView: UIView {
 
 
 extension SwiftAlertView {
-    static func show(#title: String?, message: String?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?, configureAppearance:(alertView: SwiftAlertView)->(Void), clickedButtonAction:(buttonIndex: Int)->(Void)){
+    
+    static func show(title title: String?, message: String?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?, configureAppearance:(alertView: SwiftAlertView)->(Void), clickedButtonAction:(buttonIndex: Int)->(Void)){
         let alertView = SwiftAlertView(title: title, message: message, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
         alertView.handleClickedButtonAction(clickedButtonAction)
         configureAppearance(alertView: alertView)
