@@ -266,9 +266,9 @@ class SwiftAlertView: UIView {
         
         if dimView != nil {
             UIView.animateWithDuration(disappearTime, animations: { () -> Void in
-                dimView?.alpha = 0
+                self.dimView?.alpha = 0
                 }, completion: { (finished) -> Void in
-                    dimView?.removeFromSuperview()
+                    self.dimView?.removeFromSuperview()
             })
         }
         
