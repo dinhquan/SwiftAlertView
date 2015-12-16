@@ -28,15 +28,15 @@ class ViewController: UITableViewController, SwiftAlertViewDelegate {
     // MARK: SwiftAlertViewDelegate
     
     func alertView(alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        print("Button Clicked At Index \(buttonIndex)\n", appendNewline: false)
+        print("Button Clicked At Index \(buttonIndex)")
     }
     
     func didPresentAlertView(alertView: SwiftAlertView) {
-        print("Did Present Alert View\n", appendNewline: false)
+        print("Did Present Alert View\n")
     }
     
     func didDismissAlertView(alertView: SwiftAlertView) {
-        print("Did Dismiss Alert View\n", appendNewline: false)
+        print("Did Dismiss Alert View\n")
     }
     
 
@@ -48,13 +48,13 @@ class ViewController: UITableViewController, SwiftAlertViewDelegate {
         case 0:
             let alertView = SwiftAlertView(title: nil, message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
             alertView.clickedButtonAction = {(buttonIndex) -> Void in
-                print("Button Clicked At Index \(buttonIndex)\n", appendNewline: false)
+                print("Button Clicked At Index \(buttonIndex)")
             }
             alertView.clickedCancelButtonAction = {
-                print("Cancel Button Clicked\n", appendNewline: false)
+                print("Cancel Button Clicked")
             }
             alertView.clickedOtherButtonAction = {(buttonIndex) -> Void in
-                print("Other Button Clicked At Index \(buttonIndex)", appendNewline: false)
+                print("Other Button Clicked At Index \(buttonIndex)")
             }
             alertView.show()
             
@@ -118,7 +118,7 @@ class ViewController: UITableViewController, SwiftAlertViewDelegate {
                 alertView.backgroundColor = UIColor ( red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1.0 )
                 
                 }, clickedButtonAction: { (buttonIndex) -> (Void) in
-                    print("Button Clicked At Index \(buttonIndex)\n", appendNewline: false)
+                    print("Button Clicked At Index \(buttonIndex)")
             })
             break
         default:
