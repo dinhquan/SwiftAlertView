@@ -204,63 +204,68 @@ public class SwiftAlertView: UIView {
             dimView = UIView(frame: view.bounds)
             dimView!.backgroundColor = UIColor(white: 0, alpha: CGFloat(dimAlpha))
             view.addSubview(dimView!)
-            let recognizer = UITapGestureRecognizer(target: self, action: Selector("outsideClicked:"))
+            let recognizer = UITapGestureRecognizer(target: self, action: #selector(outsideClicked(_:)))
             dimView!.addGestureRecognizer(recognizer)
         }
         
-        if delegate?.respondsToSelector(Selector("willPresentAlertView:")) == true {
+        if delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.willPresentAlertView(_:))) == true {
             delegate?.willPresentAlertView!(self)
         }
         
         view.addSubview(self)
         view.bringSubviewToFront(self)
         
-        if appearType == SwiftAlertViewAppearType.Default {
-            self.transform = CGAffineTransformMakeScale(1.1, 1.1)
-            self.alpha = 0.6
-            UIView.animateWithDuration(appearTime, animations: { () -> Void in
-                self.transform = CGAffineTransformIdentity
-                self.alpha = 1
-                }) { (finished) -> Void in
-                    if self.delegate?.respondsToSelector(Selector("didPresentAlertView:")) == true {
-                        self.delegate?.didPresentAlertView!(self)
-                    }
-            };
-        } else if appearType == SwiftAlertViewAppearType.FadeIn {
+        switch appearType! {
+        case .FadeIn:
             self.alpha = 0
             UIView.animateWithDuration(appearTime, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
                 self.alpha = 1
-            }, completion: { (finished) -> Void in
-                if self.delegate?.respondsToSelector(Selector("didPresentAlertView:")) == true {
-                    self.delegate?.didPresentAlertView!(self)
-                }
+                }, completion: { (finished) -> Void in
+                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
+                        self.delegate?.didPresentAlertView!(self)
+                    }
             })
-        } else if appearType == SwiftAlertViewAppearType.FlyFromTop {
+            break
+        case .FlyFromTop:
             let tempFrame = self.frame
             self.frame = CGRectMake(self.frame.origin.x, 0 - self.frame.size.height - 10, self.frame.size.width, self.frame.size.height)
             UIView.animateWithDuration(appearTime, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
                 self.frame = tempFrame
                 }, completion: { (finished) -> Void in
-                    if self.delegate?.respondsToSelector(Selector("didPresentAlertView:")) == true {
+                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
                         self.delegate?.didPresentAlertView!(self)
                     }
             })
-        } else if appearType == SwiftAlertViewAppearType.FlyFromLeft {
+            break
+        case .FlyFromLeft:
             let tempFrame = self.frame
             self.frame = CGRectMake(0 - self.frame.size.width - 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height)
             UIView.animateWithDuration(appearTime, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
                 self.frame = tempFrame
                 }, completion: { (finished) -> Void in
-                    if self.delegate?.respondsToSelector(Selector("didPresentAlertView:")) == true {
+                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
                         self.delegate?.didPresentAlertView!(self)
                     }
             })
+            break
+        default:
+            self.transform = CGAffineTransformMakeScale(1.1, 1.1)
+            self.alpha = 0.6
+            UIView.animateWithDuration(appearTime, animations: { () -> Void in
+                self.transform = CGAffineTransformIdentity
+                self.alpha = 1
+            }) { (finished) -> Void in
+                if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
+                    self.delegate?.didPresentAlertView!(self)
+                }
+            }
+            break
         }
     }
     
     // programmatically dismiss the alert view
     public func dismiss() {
-        if self.delegate?.respondsToSelector(Selector("willDismissAlertView:")) == true {
+        if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.willDismissAlertView(_:))) == true {
             self.delegate?.willDismissAlertView!(self)
         }
         
@@ -269,6 +274,7 @@ public class SwiftAlertView: UIView {
                 self.dimView?.alpha = 0
                 }, completion: { (finished) -> Void in
                     self.dimView?.removeFromSuperview()
+                    self.dimView = nil
             })
         }
         
@@ -278,7 +284,7 @@ public class SwiftAlertView: UIView {
                 self.alpha = 0
                 }) { (finished) -> Void in
                     self.removeFromSuperview()
-                    if self.delegate?.respondsToSelector(Selector("didDismissAlertView:")) == true {
+                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didDismissAlertView(_:))) == true {
                         self.delegate?.didDismissAlertView!(self)
                     }
             }
@@ -288,7 +294,7 @@ public class SwiftAlertView: UIView {
                 self.alpha = 0
                 }) { (finished) -> Void in
                     self.removeFromSuperview()
-                    if self.delegate?.respondsToSelector(Selector("didDismissAlertView:")) == true {
+                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didDismissAlertView(_:))) == true {
                         self.delegate?.didDismissAlertView!(self)
                     }
             }
@@ -297,7 +303,7 @@ public class SwiftAlertView: UIView {
                 self.frame = CGRectMake(self.frame.origin.x, self.superview!.frame.size.height + 10, self.frame.size.width, self.frame.size.height)
                 }) { (finished) -> Void in
                     self.removeFromSuperview()
-                    if self.delegate?.respondsToSelector(Selector("didDismissAlertView:")) == true {
+                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didDismissAlertView(_:))) == true {
                         self.delegate?.didDismissAlertView!(self)
                     }
             }
@@ -306,7 +312,7 @@ public class SwiftAlertView: UIView {
                 self.frame = CGRectMake(self.superview!.frame.size.width + 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height)
                 }) { (finished) -> Void in
                     self.removeFromSuperview()
-                    if self.delegate?.respondsToSelector(Selector("didDismissAlertView:")) == true {
+                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didDismissAlertView(_:))) == true {
                         self.delegate?.didDismissAlertView!(self)
                     }
             }
@@ -345,6 +351,13 @@ public class SwiftAlertView: UIView {
         if title == nil || message == nil {
             titleToMessageSpacing = 0
         }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deviceDidRotate(_:)), name: UIApplicationDidChangeStatusBarOrientationNotification, object: nil)
+    }
+    
+    @objc func deviceDidRotate(let aNotifitation: NSNotification) -> Void {
+        dimView?.removeFromSuperview()
+        dimView = nil
+        show()
     }
 
     private func setUpDefaultValue() {
@@ -439,7 +452,7 @@ public class SwiftAlertView: UIView {
         var i = 0
         for button in buttons {
             button.tag = i
-            i++
+            i += 1
             button.backgroundColor = UIColor.clearColor()
             button.setTitleColor(buttonTitleColor, forState: UIControlState.Normal)
             if button.tag == cancelButtonIndex {
@@ -462,13 +475,13 @@ public class SwiftAlertView: UIView {
         var i = 0
         for button in buttons {
             button.tag = i
-            i++
+            i += 1
             
             if !buttonTitleColor.isEqual(UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)) {
                 button.setTitleColor(buttonTitleColor, forState: UIControlState.Normal)
             }
             
-            button.addTarget(self, action: Selector("buttonClicked:"), forControlEvents: UIControlEvents.TouchUpInside)
+            button.addTarget(self, action: #selector(SwiftAlertView.buttonClicked(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         }
         
         if title != nil {
@@ -508,10 +521,10 @@ public class SwiftAlertView: UIView {
         } else {
             viewHeight = topPartHeight + buttonHeight * Double(buttons.count)
             var j = 1
-            for var i = buttons.count - 1; i >= 0; i = i - 1 {
-                let button = buttons[i]
+            
+            for button in buttons.reverse() {
                 button.frame = CGRect(x: 0, y: viewHeight-buttonHeight*Double(j), width: viewWidth, height: buttonHeight)
-                j++
+                j += 1
                 if hideSeparator == false {
                     let lineView = UIView(frame: CGRect(x: 0, y: Double(button.frame.origin.y), width: viewWidth, height: kSeparatorWidth))
                     lineView.backgroundColor = separatorColor
@@ -537,7 +550,7 @@ public class SwiftAlertView: UIView {
         
         let buttonIndex = button.tag
         
-        if delegate?.respondsToSelector(Selector("alertView:clickedButtonAtIndex:")) == true {
+        if delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.alertView(_:clickedButtonAtIndex:))) == true {
             delegate?.alertView!(self, clickedButtonAtIndex: buttonIndex)
         }
         
