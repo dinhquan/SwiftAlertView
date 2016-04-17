@@ -215,27 +215,18 @@ public class SwiftAlertView: UIView {
         view.addSubview(self)
         view.bringSubviewToFront(self)
         
-        if appearType == SwiftAlertViewAppearType.Default {
-            self.transform = CGAffineTransformMakeScale(1.1, 1.1)
-            self.alpha = 0.6
-            UIView.animateWithDuration(appearTime, animations: { () -> Void in
-                self.transform = CGAffineTransformIdentity
-                self.alpha = 1
-                }) { (finished) -> Void in
-                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
-                        self.delegate?.didPresentAlertView!(self)
-                    }
-            };
-        } else if appearType == SwiftAlertViewAppearType.FadeIn {
+        switch appearType! {
+        case .FadeIn:
             self.alpha = 0
             UIView.animateWithDuration(appearTime, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
                 self.alpha = 1
-            }, completion: { (finished) -> Void in
-                if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
-                    self.delegate?.didPresentAlertView!(self)
-                }
+                }, completion: { (finished) -> Void in
+                    if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
+                        self.delegate?.didPresentAlertView!(self)
+                    }
             })
-        } else if appearType == SwiftAlertViewAppearType.FlyFromTop {
+            break
+        case .FlyFromTop:
             let tempFrame = self.frame
             self.frame = CGRectMake(self.frame.origin.x, 0 - self.frame.size.height - 10, self.frame.size.width, self.frame.size.height)
             UIView.animateWithDuration(appearTime, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
@@ -245,7 +236,8 @@ public class SwiftAlertView: UIView {
                         self.delegate?.didPresentAlertView!(self)
                     }
             })
-        } else if appearType == SwiftAlertViewAppearType.FlyFromLeft {
+            break
+        case .FlyFromLeft:
             let tempFrame = self.frame
             self.frame = CGRectMake(0 - self.frame.size.width - 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height)
             UIView.animateWithDuration(appearTime, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
@@ -255,6 +247,19 @@ public class SwiftAlertView: UIView {
                         self.delegate?.didPresentAlertView!(self)
                     }
             })
+            break
+        default:
+            self.transform = CGAffineTransformMakeScale(1.1, 1.1)
+            self.alpha = 0.6
+            UIView.animateWithDuration(appearTime, animations: { () -> Void in
+                self.transform = CGAffineTransformIdentity
+                self.alpha = 1
+            }) { (finished) -> Void in
+                if self.delegate?.respondsToSelector(#selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
+                    self.delegate?.didPresentAlertView!(self)
+                }
+            }
+            break
         }
     }
     
