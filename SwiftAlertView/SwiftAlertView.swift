@@ -274,6 +274,7 @@ public class SwiftAlertView: UIView {
                 self.dimView?.alpha = 0
                 }, completion: { (finished) -> Void in
                     self.dimView?.removeFromSuperview()
+                    self.dimView = nil
             })
         }
         
@@ -350,6 +351,13 @@ public class SwiftAlertView: UIView {
         if title == nil || message == nil {
             titleToMessageSpacing = 0
         }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deviceDidRotate(_:)), name: UIApplicationDidChangeStatusBarOrientationNotification, object: nil)
+    }
+    
+    @objc func deviceDidRotate(let aNotifitation: NSNotification) -> Void {
+        dimView?.removeFromSuperview()
+        dimView = nil
+        show()
     }
 
     private func setUpDefaultValue() {
