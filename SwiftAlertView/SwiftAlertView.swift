@@ -102,6 +102,8 @@ public class SwiftAlertView: UIView {
     
     
     // MARK: Private Properties
+    
+    private var firstResponderView: UIView?
     private var contentView: UIView?
     private var buttons = [UIButton]()
     private var backgroundImageView: UIImageView?
@@ -190,6 +192,11 @@ public class SwiftAlertView: UIView {
     // show the alert view at center of screen
     public func show() {
         if let window: UIWindow = UIApplication.sharedApplication().keyWindow {
+            let rootVC = UIApplication.sharedApplication().keyWindow?.rootViewController
+            if let view = rootVC!.view.retrieveFirstResponder() {
+                firstResponderView = view
+                firstResponderView?.resignFirstResponder()
+            }
             show(window)
         }
     }
@@ -318,8 +325,7 @@ public class SwiftAlertView: UIView {
             }
         }
 
-
-
+        firstResponderView?.becomeFirstResponder()
     }
     
     // declare the closure to handle clicked button event
