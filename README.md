@@ -6,8 +6,8 @@ A powerful customizable Alert View library written in Swift.
 Feeling painful when working with UIAlertController, SwiftAlertView is the best alternative for UIKit's UIAlertView and UIAlertController.
 With SwiftAlertView, you can easily make your desired Alert View in some lines of code.
 
-![](https://dl.dropboxusercontent.com/u/61390634/SwiftAlertViewPhoto/d1.png)      ..![](https://dl.dropboxusercontent.com/u/61390634/SwiftAlertViewPhoto/d2.png)
-..![](https://dl.dropboxusercontent.com/u/61390634/SwiftAlertViewPhoto/d3.png)
+![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertViewDemo/SwiftAlertViewDemo/Resources/e1.png)      ![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertViewDemo/SwiftAlertViewDemo/Resources/e2.png)
+![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertViewDemo/SwiftAlertViewDemo/Resources/e3.png)
 
 ## Getting started
 
@@ -67,14 +67,14 @@ alertView.dismiss()
 #### Use static method to show alert
 
 ```swift
-SwiftAlertView.show(title: "Lorem ipsum", message: "Lorem ipsum dolor sit amet", cancelButtonTitle: "Cancel", otherButtonTitles: ["OK"], configureAppearance: { (alertView: SwiftAlertView) -> (Void) in
-    
-    // customize alert view appearance here
-    alertView.backgroundColor = UIColor ( red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1.0 )
-    
-    }, clickedButtonAction: { [weak self] buttonINdex in
+SwiftAlertView.show(title: "Title", message: "Message", cancelButtonTitle: "Cancel", otherButtonTitles: ["OK"], 
+    configureAppearance: { alertView in
+        // customize alert view appearance
+        alertView.backgroundColor = UIColor ( red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1.0 )
+    },
+    clickedButtonAction: { [weak self] buttonIndex in
         print("Button Clicked At Index \(buttonIndex)")
-})
+    })
 
 ```
 
@@ -83,13 +83,13 @@ SwiftAlertView.show(title: "Lorem ipsum", message: "Lorem ipsum dolor sit amet",
 ```swift
 
 alertView.clickedButtonAction = { [weak self] buttonIndex in
-  println("Button Clicked At Index \(buttonIndex)")
+    print("Button Clicked At Index \(buttonIndex)")
 }
 alertView.clickedCancelButtonAction = { [weak self]
-  println("Cancel Button Clicked")
+    print("Cancel Button Clicked")
 }
 alertView.clickedOtherButtonAction = { [weak self] buttonIndex in
-  println("Other Button Clicked At Index \(buttonIndex)")
+    print("Other Button Clicked At Index \(buttonIndex)")
 }
 
 ```
