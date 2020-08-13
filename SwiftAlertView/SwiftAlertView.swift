@@ -29,7 +29,21 @@
 import UIKit
 
 public class SwiftAlertView: UIView {
-    
+
+    public enum AppearType {
+        case `default`
+        case fadeIn
+        case flyFromTop
+        case flyFromLeft
+    }
+
+    public enum DisappearType {
+        case `default`
+        case fadeOut
+        case flyToBottom
+        case flyToRight
+    }
+
     
     // MARK: Public Properties
     
@@ -44,30 +58,30 @@ public class SwiftAlertView: UIView {
     // public var backgroundColor: UIColor? // inherits from UIView
     
     public var buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1) // to change the title color of all buttons
-    public var buttonHeight = 44.0 // default is 44
+    public var buttonHeight: CGFloat = 44.0 // default is 44
     
     public var separatorColor: UIColor! // to change the separator color
     public var hideSeparator = false // to hide the separater color
-    public var cornerRadius = 8.0 // default is 8 px
+    public var cornerRadius: CGFloat = 8.0 // default is 8 px
 
     public var dismissOnOtherButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on other buttons, set this property to false
     public var highlightOnButtonClicked = true // default is true
     public var dimBackgroundWhenShowing = true // default is true
-    public var dimAlpha = 0.2 // default is 0.2
+    public var dimAlpha: CGFloat = 0.2 // default is 0.2
     public var dismissOnOutsideClicked = false // default is false
 
-    public var appearTime: Double! // default is 0.2 second
-    public var disappearTime: Double! // default is 0.1 second
+    public var appearTime = 0.2 // default is 0.2 second
+    public var disappearTime = 0.1 // default is 0.1 second
 
-    public var appearType: SwiftAlertViewAppearType = .Default // to change the appear type
-    public var disappearType: SwiftAlertViewDisappearType = .Default // to change the disappear type
+    public var appearType: AppearType = .default // to change the appear type
+    public var disappearType: DisappearType = .default // to change the disappear type
     
     // customize the margin & spacing of title & message
-    public var titleSideMargin = 20.0  // default is 20 px
-    public var messageSideMargin = 20.0  // default is 20 px
-    public var titleTopMargin = 20.0  // default is 20 px
-    public var messageBottomMargin = 20.0// default is 20 px
-    public var titleToMessageSpacing = 20.0 // default is 10 px
+    public var titleSideMargin: CGFloat = 20.0  // default is 20 px
+    public var messageSideMargin: CGFloat = 20.0  // default is 20 px
+    public var titleTopMargin: CGFloat = 20.0  // default is 20 px
+    public var messageBottomMargin: CGFloat = 20.0// default is 20 px
+    public var titleToMessageSpacing: CGFloat = 20.0 // default is 10 px
 
     // closure for handling button clicked action
     public var clickedButtonAction: ((_ buttonIndex: Int) -> (Void))? // all buttons
@@ -88,17 +102,17 @@ public class SwiftAlertView: UIView {
     
     // MARK: Constants
     
-    private let kSeparatorWidth = 0.5
-    private let kDefaultWidth = 270.0
-    private let kDefaultHeight = 144.0
-    private let kDefaultTitleSizeMargin = 20.0
-    private let kDefaultMessageSizeMargin = 20.0
-    private let kDefaultButtonHeight = 44.0
-    private let kDefaultCornerRadius = 8.0
-    private let kDefaultTitleTopMargin = 20.0
-    private let kDefaultTitleToMessageSpacing = 10.0
-    private let kDefaultMessageBottomMargin = 20.0
-    private let kDefaultDimAlpha = 0.4
+    private let kSeparatorWidth: CGFloat = 0.5
+    private let kDefaultWidth: CGFloat = 270.0
+    private let kDefaultHeight: CGFloat = 144.0
+    private let kDefaultTitleSizeMargin: CGFloat = 20.0
+    private let kDefaultMessageSizeMargin: CGFloat = 20.0
+    private let kDefaultButtonHeight: CGFloat = 44.0
+    private let kDefaultCornerRadius: CGFloat = 8.0
+    private let kDefaultTitleTopMargin: CGFloat = 20.0
+    private let kDefaultTitleToMessageSpacing: CGFloat = 10.0
+    private let kDefaultMessageBottomMargin: CGFloat = 20.0
+    private let kDefaultDimAlpha: CGFloat = 0.4
     
     
     // MARK: Private Properties
@@ -110,8 +124,8 @@ public class SwiftAlertView: UIView {
     private var message: String?
     private var cancelButtonTitle: String?
     private var otherButtonTitles = [String]()
-    private var viewWidth: Double!
-    private var viewHeight: Double!
+    private var viewWidth: CGFloat = 0
+    private var viewHeight: CGFloat = 0
     
     
     // MARK: Init
@@ -182,7 +196,7 @@ public class SwiftAlertView: UIView {
     // MARK: Public Functions
     
     // access the buttons to customize their font & color
-    public func buttonAtIndex(index: Int) -> UIButton? {
+    public func button(at index: Int) -> UIButton? {
         if index >= 0 && index < buttons.count {
             return buttons[index]
         }
@@ -201,7 +215,7 @@ public class SwiftAlertView: UIView {
     public func show(in view: UIView) {
         layoutElementBeforeShowing()
         
-        self.frame = CGRect(x: (Double(view.frame.size.width) - viewWidth)/2, y: (Double(view.frame.size.height) - viewHeight)/2, width: viewWidth, height: viewHeight)
+        self.frame = CGRect(x: (view.frame.size.width - viewWidth)/2, y: (view.frame.size.height - viewHeight)/2, width: viewWidth, height: viewHeight)
 
         if dimBackgroundWhenShowing == true {
             dimView = UIView(frame: view.bounds)
@@ -212,14 +226,14 @@ public class SwiftAlertView: UIView {
         }
         
         if delegate?.responds(to: #selector(SwiftAlertViewDelegate.willPresentAlertView(_:))) == true {
-            delegate?.willPresentAlertView!(self)
+            delegate?.willPresentAlertView?(self)
         }
         
         view.addSubview(self)
         view.bringSubviewToFront(self)
         
         switch appearType {
-        case .FadeIn:
+        case .fadeIn:
             self.alpha = 0
             UIView.animate(withDuration: appearTime, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: { () -> Void in
                 self.alpha = 1
@@ -227,7 +241,7 @@ public class SwiftAlertView: UIView {
                     self.delegate?.didPresentAlertView?(self)
             })
             break
-        case .FlyFromTop:
+        case .flyFromTop:
             let tempFrame = self.frame
             self.frame = CGRect(x: self.frame.origin.x, y: 0 - self.frame.size.height - 10, width: self.frame.size.width, height: self.frame.size.height)
 
@@ -237,7 +251,7 @@ public class SwiftAlertView: UIView {
                     self.delegate?.didPresentAlertView?(self)
             })
             break
-        case .FlyFromLeft:
+        case .flyFromLeft:
             let tempFrame = self.frame
             self.frame = CGRect(x: 0 - self.frame.size.width - 10, y: self.frame.origin.y, width: self.frame.size.width, height: self.frame.size.height)
 
@@ -255,7 +269,7 @@ public class SwiftAlertView: UIView {
                 self.alpha = 1
             }) { (finished) -> Void in
                 if self.delegate?.responds(to: #selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
-                    self.delegate?.didPresentAlertView!(self)
+                    self.delegate?.didPresentAlertView?(self)
                 }
             }
             break
@@ -275,37 +289,35 @@ public class SwiftAlertView: UIView {
             })
         }
         
-        if disappearType == SwiftAlertViewDisappearType.Default {
+        if disappearType == .default {
             self.transform = CGAffineTransform.identity
             UIView.animate(withDuration: disappearTime, delay: 0.02, options: UIView.AnimationOptions.curveEaseOut, animations: { () -> Void in
                 self.alpha = 0
                 }) { (finished) -> Void in
                     self.removeFromSuperview()
-                    if self.delegate?.responds(to: #selector(SwiftAlertViewDelegate.didDismissAlertView(_:))) == true {
-                        self.delegate?.didDismissAlertView!(self)
-                    }
+                    self.delegate?.didDismissAlertView?(self)
             }
-        } else if disappearType == SwiftAlertViewDisappearType.FadeOut {
+        } else if disappearType == .fadeOut {
             self.alpha = 1
             UIView.animate(withDuration: disappearTime, delay: 0.02, options: UIView.AnimationOptions.curveEaseOut, animations: { () -> Void in
                 self.alpha = 0
                 }) { (finished) -> Void in
                     self.removeFromSuperview()
-                    self.delegate?.didDismissAlertView!(self)
+                    self.delegate?.didDismissAlertView?(self)
             }
-        } else if disappearType == SwiftAlertViewDisappearType.FlyToBottom {
+        } else if disappearType == .flyToBottom {
             UIView.animate(withDuration: disappearTime, delay: 0.02, options: UIView.AnimationOptions.curveEaseOut, animations: { () -> Void in
                 self.frame = CGRect(x: self.frame.origin.x, y: self.superview!.frame.size.height + 10, width: self.frame.size.width, height: self.frame.size.height)
                 }) { (finished) -> Void in
                     self.removeFromSuperview()
-                    self.delegate?.didDismissAlertView!(self)
+                    self.delegate?.didDismissAlertView?(self)
             }
-        } else if disappearType == SwiftAlertViewDisappearType.FlyToRight {
+        } else if disappearType == .flyToRight {
             UIView.animate(withDuration: disappearTime, delay: 0.02, options: UIView.AnimationOptions.curveEaseOut, animations: { () -> Void in
                 self.frame = CGRect(x: self.superview!.frame.size.width + 10, y: self.frame.origin.y, width: self.frame.size.width, height: self.frame.size.height)
                 }) { (finished) -> Void in
                     self.removeFromSuperview()
-                    self.delegate?.didDismissAlertView!(self)
+                    self.delegate?.didDismissAlertView?(self)
             }
         }
 
@@ -336,7 +348,7 @@ public class SwiftAlertView: UIView {
         setUpElements()
         setUpDefaultAppearance()
         if contentView != nil {
-            viewWidth = Double(self.contentView!.frame.size.width)
+            viewWidth = self.contentView!.frame.size.width
         }
         
         if title == nil || message == nil {
@@ -371,8 +383,8 @@ public class SwiftAlertView: UIView {
         cancelButtonIndex = 0
         appearTime = 0.2
         disappearTime = 0.1
-        appearType = SwiftAlertViewAppearType.Default
-        disappearType = SwiftAlertViewDisappearType.Default
+        appearType = .default
+        disappearType = .default
         separatorColor = UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0)
         buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
         layer.cornerRadius = CGFloat(cornerRadius)
@@ -436,6 +448,9 @@ public class SwiftAlertView: UIView {
             messageLabel.lineBreakMode = .byWordWrapping
             messageLabel.textColor = .black
             messageLabel.font = UIFont.systemFont(ofSize: 13)
+            if title == nil {
+                messageLabel.font = UIFont.boldSystemFont(ofSize: 17)
+            }
             messageLabel.textAlignment = .center
             messageLabel.backgroundColor = .clear
         }
@@ -484,13 +499,13 @@ public class SwiftAlertView: UIView {
             labelHeightToFit(messageLabel)
         }
         if title != nil {
-            titleLabel.center = CGPoint(x: viewWidth/2, y: titleTopMargin + Double(titleLabel.frame.size.height)/2)
+            titleLabel.center = CGPoint(x: viewWidth/2, y: titleTopMargin + titleLabel.frame.size.height/2)
         }
         if message != nil {
-            messageLabel.center = CGPoint(x: viewWidth/2, y: titleTopMargin + Double(titleLabel.frame.size.height) + titleToMessageSpacing + Double(messageLabel.frame.size.height)/2)
+            messageLabel.center = CGPoint(x: viewWidth/2, y: titleTopMargin + titleLabel.frame.size.height + titleToMessageSpacing + messageLabel.frame.size.height/2)
         }
         
-        let topPartHeight = (contentView == nil) ? (titleTopMargin + Double(titleLabel.frame.size.height) + titleToMessageSpacing + Double(messageLabel.frame.size.height) + messageBottomMargin) : Double(contentView!.frame.size.height)
+        let topPartHeight = (contentView == nil) ? (titleTopMargin + titleLabel.frame.size.height + titleToMessageSpacing + messageLabel.frame.size.height + messageBottomMargin) : contentView!.frame.size.height
         
         if buttons.count == 2 {
             viewHeight = topPartHeight + buttonHeight
@@ -500,24 +515,24 @@ public class SwiftAlertView: UIView {
             rightButton.frame = CGRect(x: viewWidth/2, y: viewHeight-buttonHeight, width: viewWidth/2, height: buttonHeight)
             
             if hideSeparator == false {
-                let horLine = UIView(frame: CGRect(x: 0, y: Double(leftButton.frame.origin.y), width: viewWidth, height: kSeparatorWidth))
+                let horLine = UIView(frame: CGRect(x: 0, y: leftButton.frame.origin.y, width: viewWidth, height: kSeparatorWidth))
                 horLine.backgroundColor = separatorColor
                 addSubview(horLine)
                 
-                let verLine = UIView(frame: CGRect(x: viewWidth/2, y: Double(leftButton.frame.origin.y), width: kSeparatorWidth, height: Double(leftButton.frame.size.height)))
+                let verLine = UIView(frame: CGRect(x: viewWidth/2, y: leftButton.frame.origin.y, width: kSeparatorWidth, height: leftButton.frame.size.height))
                 verLine.backgroundColor = separatorColor
                 addSubview(verLine)
             }
 
         } else {
-            viewHeight = topPartHeight + buttonHeight * Double(buttons.count)
+            viewHeight = topPartHeight + buttonHeight * CGFloat(buttons.count)
             var j = 1
             
             for button in buttons.reversed() {
-                button.frame = CGRect(x: 0, y: viewHeight-buttonHeight*Double(j), width: viewWidth, height: buttonHeight)
+                button.frame = CGRect(x: 0, y: viewHeight-buttonHeight*CGFloat(j), width: viewWidth, height: buttonHeight)
                 j += 1
                 if !hideSeparator {
-                    let lineView = UIView(frame: CGRect(x: 0, y: Double(button.frame.origin.y), width: viewWidth, height: kSeparatorWidth))
+                    let lineView = UIView(frame: CGRect(x: 0, y: button.frame.origin.y, width: viewWidth, height: kSeparatorWidth))
                     lineView.backgroundColor = separatorColor
                     addSubview(lineView)
                 }
@@ -590,24 +605,6 @@ extension SwiftAlertView {
         configureAppearance(alertView)
         alertView.show()
     }
-}
-
-
-public enum SwiftAlertViewAppearType : Int {
-    
-    case Default
-    case FadeIn
-    case FlyFromTop
-    case FlyFromLeft
-}
-
-
-public enum SwiftAlertViewDisappearType : Int {
-    
-    case Default
-    case FadeOut
-    case FlyToBottom
-    case FlyToRight
 }
 
 
