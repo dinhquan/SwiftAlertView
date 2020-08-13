@@ -225,10 +225,8 @@ public class SwiftAlertView: UIView {
             dimView!.addGestureRecognizer(recognizer)
         }
         
-        if delegate?.responds(to: #selector(SwiftAlertViewDelegate.willPresentAlertView(_:))) == true {
-            delegate?.willPresentAlertView?(self)
-        }
-        
+        delegate?.willPresentAlertView?(self)
+
         view.addSubview(self)
         view.bringSubviewToFront(self)
         
@@ -268,9 +266,7 @@ public class SwiftAlertView: UIView {
                 self.transform = CGAffineTransform.identity
                 self.alpha = 1
             }) { (finished) -> Void in
-                if self.delegate?.responds(to: #selector(SwiftAlertViewDelegate.didPresentAlertView(_:))) == true {
-                    self.delegate?.didPresentAlertView?(self)
-                }
+                self.delegate?.didPresentAlertView?(self)
             }
             break
         }
