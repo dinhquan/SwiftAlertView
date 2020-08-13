@@ -3,7 +3,7 @@ SwiftAlertView
 
 A powerful customizable Alert View library written in Swift.
 
-SwiftAlertView is the best alternative for UIKit's UIAlertView and UIAlertController.
+Feeling painful when working with UIAlertController, SwiftAlertView is the best alternative for UIKit's UIAlertView and UIAlertController.
 With SwiftAlertView, you can easily make your desired Alert View in some lines of code.
 
 ![](https://dl.dropboxusercontent.com/u/61390634/SwiftAlertViewPhoto/d1.png)      ..![](https://dl.dropboxusercontent.com/u/61390634/SwiftAlertViewPhoto/d2.png)
@@ -14,10 +14,8 @@ With SwiftAlertView, you can easily make your desired Alert View in some lines o
 #### Using CocoaPods
 Just add the following line in to your pod file:
 ```
-pod 'SwiftAlertView', '~> 1.1.0'
+pod 'SwiftAlertView', '~> 1.3.0'
 ```
-> Use version ```1.2.0``` For compatible with Swift 2.0. Download version 1.2.0 from Releases.
-
 
 #### Manually
 Drag and drop the file named ```SwiftAlertView``` in your project and you are done.
@@ -42,10 +40,10 @@ Drag and drop the file named ```SwiftAlertView``` in your project and you are do
 
 ```swift
 // Initialize with title and message
-let alertView = SwiftAlertView(title: "Sample Title", message: "Sample Message", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Button 1", "Button 2", "Button 3")
+let alertView = SwiftAlertView(title: "Sample Title", message: "Sample Message", cancelButtonTitle: "Cancel", otherButtonTitles: "Button 1", "Button 2", "Button 3")
 
 // Initialize with a custom view
-let alertView = SwiftAlertView(contentView: customView, delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
+let alertView = SwiftAlertView(contentView: customView, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
 
 // Initialize with nib name
 let alertView = SwiftAlertView(nibName: "CustomView", delegate: self, cancelButtonTitle: "I love this feature")
@@ -59,7 +57,7 @@ let alertView = SwiftAlertView(nibName: "CustomView", delegate: self, cancelButt
 alertView.show()
 
 // Show at center of a view
-alertView.show(view)
+alertView.show(in: view)
 
 // Programmatically dismiss the alert view
 alertView.dismiss()
@@ -69,13 +67,13 @@ alertView.dismiss()
 #### Use static method to show alert
 
 ```swift
-SwiftAlertView.show(title: "Lorem ipsum", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: ["OK"], configureAppearance: { (alertView: SwiftAlertView) -> (Void) in
+SwiftAlertView.show(title: "Lorem ipsum", message: "Lorem ipsum dolor sit amet", cancelButtonTitle: "Cancel", otherButtonTitles: ["OK"], configureAppearance: { (alertView: SwiftAlertView) -> (Void) in
     
     // customize alert view appearance here
     alertView.backgroundColor = UIColor ( red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1.0 )
     
-    }, clickedButtonAction: { (buttonIndex) -> (Void) in
-        print("Button Clicked At Index \(buttonIndex)\n")
+    }, clickedButtonAction: { [weak self] buttonINdex in
+        print("Button Clicked At Index \(buttonIndex)")
 })
 
 ```
@@ -84,13 +82,13 @@ SwiftAlertView.show(title: "Lorem ipsum", message: "Lorem ipsum dolor sit amet, 
 
 ```swift
 
-alertView.clickedButtonAction = {(buttonIndex) -> Void in
+alertView.clickedButtonAction = { [weak self] buttonIndex in
   println("Button Clicked At Index \(buttonIndex)")
 }
-alertView.clickedCancelButtonAction = {
+alertView.clickedCancelButtonAction = { [weak self]
   println("Cancel Button Clicked")
 }
-alertView.clickedOtherButtonAction = {(buttonIndex) -> Void in
+alertView.clickedOtherButtonAction = { [weak self] buttonIndex in
   println("Other Button Clicked At Index \(buttonIndex)")
 }
 
@@ -100,15 +98,15 @@ If you don't want to use closures, make your view controller conform ```SwiftAle
 
 ```swift
 
-func alertView(alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
+func alertView(_ alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
   println("Button Clicked At Index \(buttonIndex)")
 }
 
-func didPresentAlertView(alertView: SwiftAlertView) {
+func didPresentAlertView(_ alertView: SwiftAlertView) {
   println("Did Present Alert View")
 }
 
-func didDismissAlertView(alertView: SwiftAlertView) {
+func didDismissAlertView(_ alertView: SwiftAlertView) {
   println("Did Dismiss Alert View")
 }
 
@@ -119,47 +117,44 @@ SwiftAlertView can be customized with the following properties:
 
 ```swift
 
-var titleLabel: UILabel! // access titleLabel to customize the title font, color
-var messageLabel: UILabel! // access messageLabel to customize the message font, color
+public var titleLabel: UILabel! // access titleLabel to customize the title font, color
+public var messageLabel: UILabel! // access messageLabel to customize the message font, color
 
-var cancelButtonIndex: Int! // default is 0, set this property if you want to change the position of cancel button
+public var cancelButtonIndex = 0 // default is 0, set this property if you want to change the position of cancel button
 
-var backgroundImage: UIImage?
-// var backgroundColor: UIColor? // inherits from UIView
+public var backgroundImage: UIImage?
+// public var backgroundColor: UIColor? // inherits from UIView
 
-var buttonTitleColor: UIColor! // to change the title color of all buttons
-var buttonHeight: Double! // default is 44
+public var buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1) // to change the title color of all buttons
+public var buttonHeight: CGFloat = 44.0 // default is 44
 
-var separatorColor: UIColor! // to change the separator color
-var hideSeparator: Bool! // to hide the separater color
-var cornerRadius: Double! // default is 8 px
+public var separatorColor: UIColor! // to change the separator color
+public var hideSeparator = false // to hide the separater color
+public var cornerRadius: CGFloat = 8.0 // default is 8 px
 
-var dismissOnOtherButtonClicked: Bool! // default is true, if you want the alert view will not be dismissed when clicking on other buttons, set this property to false
-var highlightOnButtonClicked: Bool! // default is true
-var dimBackgroundWhenShowing: Bool! // default is true
-var dimAlpha: Double! // default is 0.2
-var dismissOnOutsideClicked: Bool! // default is false
+public var dismissOnOtherButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on other buttons, set this property to false
+public var highlightOnButtonClicked = true // default is true
+public var dimBackgroundWhenShowing = true // default is true
+public var dimAlpha: CGFloat = 0.2 // default is 0.2
+public var dismissOnOutsideClicked = false // default is false
 
-var appearTime: Double! // default is 0.2 second
-var disappearTime: Double! // default is 0.1 second
+public var appearTime = 0.2 // default is 0.2 second
+public var disappearTime = 0.1 // default is 0.1 second
 
-var appearType: SwiftAlertViewAppearType! // to change the appear type
-var disappearType: SwiftAlertViewDisappearType! // to change the disappear type
+public var appearType: AppearType = .default // to change the appear type
+public var disappearType: DisappearType = .default // to change the disappear type
 
 // customize the margin & spacing of title & message
-var titleSideMargin: Double!  // default is 20 px
-var messageSideMargin: Double!  // default is 20 px
-var titleTopMargin: Double!  // default is 20 px
-var messageBottomMargin: Double! // default is 20 px
-var titleToMessageSpacing: Double! // default is 10 px
+public var titleSideMargin: CGFloat = 20.0  // default is 20 px
+public var messageSideMargin: CGFloat = 20.0  // default is 20 px
+public var titleTopMargin: CGFloat = 20.0  // default is 20 px
+public var messageBottomMargin: CGFloat = 20.0// default is 20 px
+public var titleToMessageSpacing: CGFloat = 20.0 // default is 10 px
 
 // closure for handling button clicked action
-var clickedButtonAction:((buttonIndex: Int) -> (Void))? // all buttons
-var clickedCancelButtonAction:((Void) -> (Void))? // for cancel button
-var clickedOtherButtonAction:((buttonIndex: Int) -> (Void))? // sometimes you want to handle the other button click event but don't want to write if/else in clickedButtonAction closure, use this property
-
-// access the buttons to customize their font & color
-func buttonAtIndex(index: Int) -> UIButton?
+public var clickedButtonAction: ((_ buttonIndex: Int) -> (Void))? // all buttons
+public var clickedCancelButtonAction: (() -> Void)? // for cancel button
+public var clickedOtherButtonAction: ((_ buttonIndex: Int) -> (Void))? // sometimes you want to handle the other button click event but don't want to write if/else in clickedButtonAction closure, use this property
 
 ```
 
