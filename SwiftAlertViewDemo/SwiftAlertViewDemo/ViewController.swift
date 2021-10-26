@@ -8,32 +8,13 @@
 
 import UIKit
 
-class ViewController: UITableViewController, SwiftAlertViewDelegate {
+class ViewController: UITableViewController {
 
-    var demoTitles: [String]!
+    let demoTitles: [String] = ["No Title", "More Than Two Buttons", "Customize Font & Color", "Custom Content View", "Init From Nib File", "Customize Appearance Type", "Static Method"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        demoTitles = ["No Title", "More Than Two Buttons", "Customize Font & Color", "Custom Content View", "Init From Nib File", "Customize Appearance Type", "Static Method"]
-        tableView.reloadData()
     }
-
-    
-    // MARK: SwiftAlertViewDelegate
-    
-    func alertView(_ alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        print("Button Clicked At Index \(buttonIndex)")
-    }
-    
-    func didPresentAlertView(alertView: SwiftAlertView) {
-        print("Did Present Alert View\n")
-    }
-    
-    func didDismissAlertView(alertView: SwiftAlertView) {
-        print("Did Dismiss Alert View\n")
-    }
-    
 
     // MARK: TableView Delegate & Datasource
 
@@ -42,7 +23,10 @@ class ViewController: UITableViewController, SwiftAlertViewDelegate {
         
         switch indexPath.row {
         case 0:
-            let alertView = SwiftAlertView(title: nil, message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
+            let alertView = SwiftAlertView(title: nil,
+                                           message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                                           cancelButtonTitle: "Cancel",
+                                           otherButtonTitles: "OK")
 
             alertView.clickedButtonAction = { [unowned self] buttonIndex in
                 print("Button Clicked At Index \(buttonIndex)")
@@ -102,9 +86,9 @@ class ViewController: UITableViewController, SwiftAlertViewDelegate {
         case 5:
             let alertView = SwiftAlertView(title: "Lorem ipsum ", message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Button 1", "Button 2", "Button 3")
             alertView.appearType = .flyFromTop
-            alertView.disappearType = .flyToRight
-            alertView.appearTime = 1
-            alertView.disappearTime = 1
+            alertView.disappearType = .flyToBottom
+            alertView.appearTime = 0.3
+            alertView.disappearTime = 0.3
             
             alertView.show()
 
@@ -136,3 +120,18 @@ class ViewController: UITableViewController, SwiftAlertViewDelegate {
 
 }
 
+// MARK: SwiftAlertViewDelegate
+
+extension ViewController: SwiftAlertViewDelegate {
+    func alertView(_ alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        print("Button Clicked At Index \(buttonIndex)")
+    }
+
+    func didPresentAlertView(alertView: SwiftAlertView) {
+        print("Did Present Alert View\n")
+    }
+
+    func didDismissAlertView(alertView: SwiftAlertView) {
+        print("Did Dismiss Alert View\n")
+    }
+}
