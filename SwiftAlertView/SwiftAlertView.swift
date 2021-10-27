@@ -61,14 +61,14 @@ public class SwiftAlertView: UIView {
     public var buttonHeight: CGFloat = 44.0 // default is 44
     
     public var separatorColor = UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0) // to change the separator color
-    public var hideSeparator = false // to hide the separater color
+    public var isHideSeparator = false // to hide the separater color
     public var cornerRadius: CGFloat = 8.0 // default is 8 px
 
-    public var dismissOnOtherButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on other buttons, set this property to false
-    public var highlightOnButtonClicked = true // default is true
-    public var dimBackgroundWhenShowing = true // default is true
+    public var isDismissOnActionButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on action buttons, set this property to false
+    public var isHighlightOnButtonClicked = true // default is true
+    public var isDimBackgroundWhenShowing = true // default is true
+    public var isDismissOnOutsideTapped = false // default is false
     public var dimAlpha: CGFloat = 0.2 // default is 0.2
-    public var dismissOnOutsideClicked = false // default is false
 
     public var appearTime = 0.2 // default is 0.2 second
     public var disappearTime = 0.1 // default is 0.1 second
@@ -83,10 +83,10 @@ public class SwiftAlertView: UIView {
     public var messageBottomMargin: CGFloat = 20.0// default is 20 px
     public var titleToMessageSpacing: CGFloat = 20.0 // default is 10 px
 
-    // closure for handling button clicked action
-    public var clickedButtonAction: ((_ buttonIndex: Int) -> (Void))? // all buttons
-    public var clickedCancelButtonAction: (() -> Void)? // for cancel button
-    public var clickedOtherButtonAction: ((_ buttonIndex: Int) -> (Void))? // sometimes you want to handle the other button click event but don't want to write if/else in clickedButtonAction closure, use this property
+    // closures for handling button clicked action
+    public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
+    public var onCancelClicked: (() -> Void)? // for cancel button
+    public var onActionButtonClicked: ((_ buttonIndex: Int) -> (Void))? // sometimes you want to handle the action button clicked event but don't want to write if/else in onButtonClicked closure, use this property
 
 
     // MARK: Constants
@@ -172,13 +172,13 @@ public class SwiftAlertView: UIView {
     public func show(in view: UIView) {
         layoutElementBeforeShowing()
         
-        self.frame = CGRect(x: (view.frame.size.width - viewWidth)/2, y: (view.frame.size.height - viewHeight)/2, width: viewWidth, height: viewHeight)
+        frame = CGRect(x: (view.frame.size.width - viewWidth)/2, y: (view.frame.size.height - viewHeight)/2, width: viewWidth, height: viewHeight)
 
-        if dimBackgroundWhenShowing == true {
+        if isDimBackgroundWhenShowing {
             dimView = UIView(frame: view.bounds)
             dimView!.backgroundColor = UIColor(white: 0, alpha: CGFloat(dimAlpha))
             view.addSubview(dimView!)
-            let recognizer = UITapGestureRecognizer(target: self, action: #selector(outsideClicked(_:)))
+            let recognizer = UITapGestureRecognizer(target: self, action: #selector(outsideTapped(_:)))
             dimView!.addGestureRecognizer(recognizer)
         }
         
@@ -189,8 +189,8 @@ public class SwiftAlertView: UIView {
         
         switch appearType {
         case .default:
-            self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-            self.alpha = 0.6
+            transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+            alpha = 0.6
 
             UIView.animate(withDuration: appearTime) {
                 self.transform = CGAffineTransform.identity
@@ -199,7 +199,7 @@ public class SwiftAlertView: UIView {
                 self.delegate?.didPresentAlertView?(self)
             }
         case .fadeIn:
-            self.alpha = 0
+            alpha = 0
 
             UIView.animate(withDuration: appearTime, delay: 0, options: .curveEaseInOut) {
                 self.alpha = 1
@@ -207,8 +207,8 @@ public class SwiftAlertView: UIView {
                 self.delegate?.didPresentAlertView?(self)
             }
         case .flyFromTop:
-            let tempFrame = self.frame
-            self.frame = CGRect(x: self.frame.origin.x, y: 0 - self.frame.size.height - 10, width: self.frame.size.width, height: self.frame.size.height)
+            let tempFrame = frame
+            frame = CGRect(x: frame.origin.x, y: 0 - frame.size.height - 10, width: frame.size.width, height: frame.size.height)
 
             UIView.animate(withDuration: appearTime, delay: 0, options: .curveEaseInOut) {
                 self.frame = tempFrame
@@ -216,8 +216,8 @@ public class SwiftAlertView: UIView {
                 self.delegate?.didPresentAlertView?(self)
             }
         case .flyFromLeft:
-            let tempFrame = self.frame
-            self.frame = CGRect(x: 0 - self.frame.size.width - 10, y: self.frame.origin.y, width: self.frame.size.width, height: self.frame.size.height)
+            let tempFrame = frame
+            frame = CGRect(x: 0 - frame.size.width - 10, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
 
             UIView.animate(withDuration: appearTime, delay: 0, options: .curveEaseInOut) {
                 self.frame = tempFrame
@@ -242,7 +242,7 @@ public class SwiftAlertView: UIView {
 
         switch disappearType {
         case .default:
-            self.transform = CGAffineTransform.identity
+            transform = CGAffineTransform.identity
 
             UIView.animate(withDuration: disappearTime, delay: 0.02, options: .curveEaseOut) {
                 self.alpha = 0
@@ -278,7 +278,7 @@ public class SwiftAlertView: UIView {
     
     // handle button click events
     public func handleButtonClicked(_ handler: @escaping (_ buttonIndex: Int) -> Void) {
-        clickedButtonAction = handler
+        onButtonClicked = handler
     }
 }
 
@@ -305,8 +305,8 @@ extension SwiftAlertView {
         setUpElements()
         setUpDefaultAppearance()
 
-        if contentView != nil {
-            viewWidth = self.contentView!.frame.size.width
+        if let contentView = contentView {
+            viewWidth = contentView.frame.size.width
         }
         
         if title == nil || message == nil {
@@ -333,11 +333,11 @@ extension SwiftAlertView {
         titleToMessageSpacing = kDefaultTitleToMessageSpacing
         messageBottomMargin = kDefaultMessageBottomMargin
         dimAlpha = kDefaultDimAlpha
-        dimBackgroundWhenShowing = true
-        dismissOnOtherButtonClicked = true
-        highlightOnButtonClicked = true
-        dismissOnOutsideClicked = false
-        hideSeparator = false
+        isDimBackgroundWhenShowing = true
+        isDismissOnActionButtonClicked = true
+        isHighlightOnButtonClicked = true
+        isDismissOnOutsideTapped = false
+        isHideSeparator = false
         cornerRadius = kDefaultCornerRadius
         appearTime = kDefaultAppearTime
         disappearTime = kDefaultDisappearTime
@@ -375,6 +375,7 @@ extension SwiftAlertView {
     
     private func setUpDefaultAppearance() {
         self.backgroundColor = UIColor(red: 245.0/255, green: 245.0/255, blue: 245.0/255, alpha: 1)
+
         if let backgroundImage = backgroundImage {
             backgroundImageView = UIImageView(frame: self.bounds)
             backgroundImageView?.image = backgroundImage
@@ -454,7 +455,7 @@ extension SwiftAlertView {
             leftButton.frame = CGRect(x: 0, y: viewHeight-buttonHeight, width: viewWidth/2, height: buttonHeight)
             rightButton.frame = CGRect(x: viewWidth/2, y: viewHeight-buttonHeight, width: viewWidth/2, height: buttonHeight)
             
-            if hideSeparator == false {
+            if !isHideSeparator {
                 let horLine = UIView(frame: CGRect(x: 0, y: leftButton.frame.origin.y, width: viewWidth, height: kSeparatorWidth))
                 horLine.backgroundColor = separatorColor
                 addSubview(horLine)
@@ -471,7 +472,7 @@ extension SwiftAlertView {
             for button in buttons.reversed() {
                 button.frame = CGRect(x: 0, y: viewHeight-buttonHeight*CGFloat(j), width: viewWidth, height: buttonHeight)
                 j += 1
-                if !hideSeparator {
+                if !isHideSeparator {
                     let lineView = UIView(frame: CGRect(x: 0, y: button.frame.origin.y, width: viewWidth, height: kSeparatorWidth))
                     lineView.backgroundColor = separatorColor
                     addSubview(lineView)
@@ -484,7 +485,7 @@ extension SwiftAlertView {
     // MARK: Actions
     
     @objc private func buttonClicked(_ button: UIButton) {
-        if (highlightOnButtonClicked == true) {
+        if (isHighlightOnButtonClicked) {
             let originColor = button.backgroundColor?.withAlphaComponent(0)
             button.backgroundColor = button.backgroundColor?.withAlphaComponent(0.1)
 
@@ -497,23 +498,23 @@ extension SwiftAlertView {
         
         delegate?.alertView?(self, clickedButtonAtIndex: buttonIndex)
 
-        clickedButtonAction?(buttonIndex)
+        onButtonClicked?(buttonIndex)
 
         if buttonIndex == cancelButtonIndex {
-            clickedCancelButtonAction?()
+            onCancelClicked?()
         } else {
-            clickedOtherButtonAction?(buttonIndex)
+            onActionButtonClicked?(buttonIndex)
         }
         
-        if dismissOnOtherButtonClicked == true {
+        if isDismissOnActionButtonClicked {
             dismiss()
         } else if buttonIndex == cancelButtonIndex {
             dismiss()
         }
     }
     
-    @objc func outsideClicked(_ recognizer: UITapGestureRecognizer) {
-        if dismissOnOutsideClicked {
+    @objc func outsideTapped(_ recognizer: UITapGestureRecognizer) {
+        if isDismissOnOutsideTapped {
             dismiss()
         }
     }

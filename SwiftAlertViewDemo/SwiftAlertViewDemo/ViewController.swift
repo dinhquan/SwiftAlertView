@@ -27,16 +27,16 @@ class ViewController: UITableViewController {
             let alertView = SwiftAlertView(message: message,
                                            buttonTitles: ["Cancel", "OK"])
 
-            alertView.clickedButtonAction = { [unowned self] buttonIndex in
+            alertView.onButtonClicked = { buttonIndex in
                 print("Button Clicked At Index \(buttonIndex)")
             }
 
-            alertView.clickedCancelButtonAction = { [unowned self] in
+            alertView.onCancelClicked = {
                 print("Cancel Button Clicked")
             }
 
-            alertView.clickedOtherButtonAction = { [unowned self] buttonIndex in
-                print("Other Button Clicked At Index \(buttonIndex)")
+            alertView.onActionButtonClicked = { _ in
+                print("Action Button Clicked")
             }
 
             alertView.show()
