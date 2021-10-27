@@ -60,7 +60,7 @@ public class SwiftAlertView: UIView {
     public var buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1) // to change the title color of all buttons
     public var buttonHeight: CGFloat = 44.0 // default is 44
     
-    public var separatorColor: UIColor! // to change the separator color
+    public var separatorColor = UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0) // to change the separator color
     public var hideSeparator = false // to hide the separater color
     public var cornerRadius: CGFloat = 8.0 // default is 8 px
 
@@ -87,18 +87,6 @@ public class SwiftAlertView: UIView {
     public var clickedButtonAction: ((_ buttonIndex: Int) -> (Void))? // all buttons
     public var clickedCancelButtonAction: (() -> Void)? // for cancel button
     public var clickedOtherButtonAction: ((_ buttonIndex: Int) -> (Void))? // sometimes you want to handle the other button click event but don't want to write if/else in clickedButtonAction closure, use this property
-
-    /** Example of using these closures
-    alertView.clickedButtonAction = {(buttonIndex) -> Void in
-        println("Button Clicked At Index \(buttonIndex)")
-    }
-    alertView.clickedCancelButtonAction = {
-        println("Cancel Button Clicked")
-    }
-    alertView.clickedOtherButtonAction = {(buttonIndex) -> Void in
-        println("Other Button Clicked At Index \(buttonIndex)")
-    }
-    */
     
     // MARK: Constants
     
@@ -117,83 +105,48 @@ public class SwiftAlertView: UIView {
     
     // MARK: Private Properties
     private var contentView: UIView?
-    private var buttons = [UIButton]()
+    private var buttons: [UIButton] = []
     private var backgroundImageView: UIImageView?
     private var dimView: UIView?
     private var title: String?
     private var message: String?
-    private var cancelButtonTitle: String?
-    private var otherButtonTitles = [String]()
+    private var buttonTitles: [String] = []
+
+//    private var cancelButtonTitle: String?
+//    private var otherButtonTitles = [String]()
     private var viewWidth: CGFloat = 0
     private var viewHeight: CGFloat = 0
     
     
-    // MARK: Init
-    
-    // init with title and message, set title to nil to make alert be no title, same with message
-    public init(title: String?, message: String?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: String...) {
-        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        setUp(title: title, message: message, contentView: nil, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
-    }
-    
-    // init with title and message, use this constructor in case of only one button
-    public init(title: String?, message: String?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?) {
-        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        setUp(title: title, message: message, contentView: nil, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil)
-    }
-    
-    public init(title: String?, message: String?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?) {
-        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        setUp(title: title, message: message, contentView: nil, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
-    }
-    
-    // init with custom content view
-    public init(contentView: UIView!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: String...) {
-        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+    // MARK: Initialization
 
-        setUp(title: nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
+    public init(title: String? = nil,
+                message: String? = nil,
+                buttonTitles: [String] = [],
+                cancelButtonIndex: Int = 0) {
+        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+        setUp(title: title, message: message, buttonTitles: buttonTitles, cancelButtonIndex: cancelButtonIndex)
+    }
+
+    public init(contentView: UIView,
+                buttonTitles: [String] = [],
+                cancelButtonIndex: Int = 0) {
+        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+        setUp(contentView: contentView, buttonTitles: buttonTitles, cancelButtonIndex: cancelButtonIndex)
     }
     
-    public init(contentView: UIView!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?) {
+    public init(nibName: String,
+                buttonTitles: [String] = [],
+                cancelButtonIndex: Int = 0) {
         super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        
-        setUp(title: nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: nil)
-    }
-    
-    public init(contentView: UIView!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?) {
-        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        
-        setUp(title: nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
-    }
-    
-    // init with custom nib file from main bundle, make sure this file exists
-    public init(nibName: String!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: String...) {
-        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-    
-        if let contentView = Bundle.main.loadNibNamed(nibName, owner: nil, options: nil)?.first as? UIView {
-            setUp(title: nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
+        guard let contentView = Bundle.main.loadNibNamed(nibName, owner: nil, options: nil)?.first as? UIView else {
+            fatalError("Could not load nib file")
         }
-    }
-    
-    public init(nibName: String!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?) {
-        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        
-        if let contentView = Bundle.main.loadNibNamed(nibName, owner: nil, options: nil)?.first as? UIView {
-            setUp(title: nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle:
-            cancelButtonTitle, otherButtonTitles: nil)
-        }
-    }
-    
-    public init(nibName: String!, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?) {
-        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        
-        if let contentView = Bundle.main.loadNibNamed(nibName, owner: nil, options: nil)?.first as? UIView {
-            setUp(title: nil, message: nil, contentView: contentView, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
-        }
+        setUp(contentView: contentView, buttonTitles: buttonTitles, cancelButtonIndex: cancelButtonIndex)
     }
     
     
-    // MARK: Public Functions
+    // MARK: Public Methods
     
     // access the buttons to customize their font & color
     public func button(at index: Int) -> UIButton? {
@@ -316,9 +269,6 @@ public class SwiftAlertView: UIView {
                     self.delegate?.didDismissAlertView?(self)
             }
         }
-
-
-
     }
     
     // declare the closure to handle clicked button event
@@ -329,20 +279,24 @@ public class SwiftAlertView: UIView {
 
     // MARK: Private Functions
 
-    private func setUp(title: String?, message: String?, contentView: UIView?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?) {
-        self.delegate = delegate
+    private func setUp(title: String? = nil,
+                       message: String? = nil,
+                       contentView: UIView? = nil,
+                       buttonTitles: [String] = [],
+                       cancelButtonIndex: Int = 0) {
         self.title = title
         self.message = message
-        self.cancelButtonTitle = cancelButtonTitle
-        if otherButtonTitles != nil {
-            self.otherButtonTitles = otherButtonTitles!
-        }
-        if contentView != nil {
+        self.buttonTitles = buttonTitles
+        self.cancelButtonIndex = cancelButtonIndex
+
+        if let contentView = contentView {
             self.contentView = contentView
         }
+
         setUpDefaultValue()
         setUpElements()
         setUpDefaultAppearance()
+
         if contentView != nil {
             viewWidth = self.contentView!.frame.size.width
         }
@@ -350,6 +304,7 @@ public class SwiftAlertView: UIView {
         if title == nil || message == nil {
             titleToMessageSpacing = 0
         }
+
         NotificationCenter.default.addObserver(self, selector: #selector(deviceDidRotate(_:)), name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
     }
     
@@ -381,7 +336,6 @@ public class SwiftAlertView: UIView {
         disappearTime = 0.1
         appearType = .default
         disappearType = .default
-        separatorColor = UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0)
         buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
         layer.cornerRadius = CGFloat(cornerRadius)
     }
@@ -405,19 +359,12 @@ public class SwiftAlertView: UIView {
             addSubview(contentView)
         }
         
-        if let cancelTitle = cancelButtonTitle {
-            let cancelButton = UIButton(type: .custom)
-            cancelButton.setTitle(cancelTitle, for: .normal)
-            buttons.append(cancelButton)
-            addSubview(cancelButton)
-        }
-        
-        for otherTitle in otherButtonTitles {
-            let otherButton = UIButton(type: .custom)
-            
-            otherButton.setTitle(otherTitle, for: .normal)
-            buttons.append(otherButton)
-            addSubview(otherButton)
+
+        for buttonTitle in buttonTitles {
+            let button = UIButton(type: .custom)
+            button.setTitle(buttonTitle, for: .normal)
+            buttons.append(button)
+            addSubview(button)
         }
     }
     
@@ -467,13 +414,11 @@ public class SwiftAlertView: UIView {
     
     private func layoutElementBeforeShowing() {
         // Reorder buttons
-        if cancelButtonTitle != nil {
-            if cancelButtonIndex > 0 && cancelButtonIndex < buttons.count {
-                let cancelButton = buttons.remove(at: 0)
-                buttons.insert(cancelButton, at: cancelButtonIndex)
-            }
+        if cancelButtonIndex > 0 && cancelButtonIndex < buttons.count {
+            let cancelButton = buttons.remove(at: 0)
+            buttons.insert(cancelButton, at: cancelButtonIndex)
         }
-        
+
         var i = 0
         for button in buttons {
             button.tag = i
@@ -594,18 +539,30 @@ public class SwiftAlertView: UIView {
 
 
 extension SwiftAlertView {
-    
-    public static func show(title: String?, message: String?, delegate: SwiftAlertViewDelegate?, cancelButtonTitle: String?, otherButtonTitles: [String]?, configureAppearance:(_ alertView: SwiftAlertView) -> (Void), clickedButtonAction:@escaping (_ buttonIndex: Int)->(Void)){
-        let alertView = SwiftAlertView(title: title, message: message, delegate: delegate, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: otherButtonTitles)
-        alertView.handleClickedButtonAction(clickedButtonAction)
-        configureAppearance(alertView)
+
+    @discardableResult
+    public static func show(title: String? = nil,
+                            message: String? = nil,
+                            buttonTitles: [String] = [],
+                            cancelButtonIndex: Int = 0,
+                            configure: ((_ alertView: SwiftAlertView) -> Void)? = nil) -> SwiftAlertView {
+        let alertView = SwiftAlertView(title: title,
+                                       message: message,
+                                       buttonTitles: buttonTitles.isEmpty ? ["OK"] : buttonTitles,
+                                       cancelButtonIndex: cancelButtonIndex)
+        configure?(alertView)
         alertView.show()
+        return alertView
+    }
+
+    public func handleButtonClicked(_ handler: @escaping (_ buttonIndex: Int) -> Void) {
+        handleClickedButtonAction(handler)
     }
 }
 
 
 @objc public protocol SwiftAlertViewDelegate : NSObjectProtocol {
-    
+
     @objc optional func alertView(_ alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int)
     
     @objc optional func willPresentAlertView(_ alertView: SwiftAlertView) // before animation and showing view
