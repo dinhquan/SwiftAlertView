@@ -8,9 +8,9 @@ With `SwiftAlertView`, you can easily make your desired Alert View in some lines
 
 ![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertView/Images/demo.png)
 
-## Getting started
+## Installation
 
-### CocoaPods
+#### CocoaPods
 
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. To integrate SwiftAlertView into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
@@ -18,7 +18,7 @@ With `SwiftAlertView`, you can easily make your desired Alert View in some lines
 pod 'SwiftAlertView', '~> 2.0.0'
 ```
 
-### Carthage
+#### Carthage
 
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate SwiftAlertView into your Xcode project using Carthage, specify it in your `Cartfile`:
 
@@ -26,7 +26,7 @@ pod 'SwiftAlertView', '~> 2.0.0'
 github "https://github.com/dinhquan/SwiftAlertView" ~> 2.0.0
 ```
 
-### Swift Package Manager
+#### Swift Package Manager
 
 The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler.
 
@@ -56,14 +56,12 @@ Drag and drop the file named ```SwiftAlertView``` inside `Source` in your projec
 
 ## Usage
 
-### Show alert
+### Showing an alert
 
 Showing an alert is easy as pie
 
 ```swift
-SwiftAlertView.show(title: "Sample title",
-                    message: "Sample message",
-                    buttonTitles: "Cancel", "OK")
+SwiftAlertView.show(title: "Sample title", message: "Sample message", buttonTitles: "Cancel", "OK")
 ```
 
 You can show alert with custom content view
@@ -97,7 +95,7 @@ SwiftAlertView.show(title: "Sample title",
     }
 ```
 
-#### Programmatically creating an alert
+### Programmatically creating an alert
 
 Initialize an alert
 
@@ -145,26 +143,26 @@ If you don't want to use closures, make your view controller conform ```SwiftAle
 alertView.delegate = self
 
 func alertView(_ alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
-  println("Button Clicked At Index \(buttonIndex)")
+    println("Button Clicked At Index \(buttonIndex)")
 }
 
 func didPresentAlertView(_ alertView: SwiftAlertView) {
-  println("Did Present Alert View")
+    println("Did Present Alert View")
 }
 
 func didDismissAlertView(_ alertView: SwiftAlertView) {
-  println("Did Dismiss Alert View")
+    println("Did Dismiss Alert View")
 }
 
 ```
-#### Customization
+### Customization
 
 SwiftAlertView can be customized with the following properties:
 
 ```swift
 
 public var titleLabel: UILabel! // access titleLabel to customize the title font, color
-    public var messageLabel: UILabel! // access messageLabel to customize the message font, color
+public var messageLabel: UILabel! // access messageLabel to customize the message font, color
     
 public var cancelButtonIndex = 0 // default is 0, set this property if you want to change the position of cancel button
 
