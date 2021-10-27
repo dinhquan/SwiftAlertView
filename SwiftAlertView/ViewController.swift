@@ -32,7 +32,7 @@ final class ViewController: UITableViewController {
         case 0:
             let message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             let alertView = SwiftAlertView(message: message,
-                                           buttonTitles: ["Cancel", "OK"])
+                                           buttonTitles: "Cancel", "Ok")
 
             alertView.onButtonClicked = { buttonIndex in
                 print("Button Clicked At Index \(buttonIndex)")
@@ -51,8 +51,7 @@ final class ViewController: UITableViewController {
         case 1:
             let alertView = SwiftAlertView(title: "Lorem ipsum",
                                            message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-                                           buttonTitles: ["Button 1", "Button 2", "Button 3", "Cancel"],
-                                           cancelButtonIndex: 3)
+                                           buttonTitles: "Button 1", "Button 2", "Button 3", "Cancel")
             alertView.delegate = self
             alertView.cancelButtonIndex = 3
             alertView.buttonTitleColor = UIColor(red: 0.8764, green: 0.5, blue: 0.3352, alpha: 1)
@@ -110,12 +109,19 @@ final class ViewController: UITableViewController {
             alertView.show()
 
         case 7:
+            SwiftAlertView.show(nibName: "CustomView", buttonTitles: "OK")
+            SwiftAlertView.show(title: "Sample title",
+                                message: "Sample message",
+                                buttonTitles: "OK", "Cancel")
+                .onButtonClicked { buttonIndex in
+                    print("Button Clicked At Index \(buttonIndex)")
+                }
             SwiftAlertView.show(title: "Lorem ipsum",
-                                message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", buttonTitles: ["Cancel", "OK"]) { alertView in
+                                message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", buttonTitles: "Cancel", "OK") { alertView in
                 alertView.backgroundColor = UIColor(red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1)
                     alertView.titleLabel.font = UIFont.systemFont(ofSize: 20)
                 }
-                .handleButtonClicked { buttonIndex in
+                .onButtonClicked { buttonIndex in
                     print("Button Clicked At Index \(buttonIndex)")
                 }
 

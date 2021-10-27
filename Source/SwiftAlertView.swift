@@ -121,29 +121,41 @@ public class SwiftAlertView: UIView {
     
     // MARK: Initialization
 
-    public init(title: String? = nil,
-                message: String? = nil,
-                buttonTitles: [String] = [],
-                cancelButtonIndex: Int = 0) {
+    public init(title: String? = nil, message: String? = nil, buttonTitles: [String]) {
         super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        setUp(title: title, message: message, buttonTitles: buttonTitles, cancelButtonIndex: cancelButtonIndex)
+        setUp(title: title, message: message, buttonTitles: buttonTitles)
     }
 
-    public init(contentView: UIView,
-                buttonTitles: [String] = [],
-                cancelButtonIndex: Int = 0) {
+    public init(title: String? = nil, message: String? = nil, buttonTitles: String...) {
         super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
-        setUp(contentView: contentView, buttonTitles: buttonTitles, cancelButtonIndex: cancelButtonIndex)
+        setUp(title: title, message: message, buttonTitles: buttonTitles)
+    }
+
+    public init(contentView: UIView, buttonTitles: [String]) {
+        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+        setUp(contentView: contentView, buttonTitles: buttonTitles)
+    }
+
+    public init(contentView: UIView, buttonTitles: String...) {
+        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+        setUp(contentView: contentView, buttonTitles: buttonTitles)
     }
     
-    public init(nibName: String,
-                buttonTitles: [String] = [],
-                cancelButtonIndex: Int = 0) {
+    public init(nibName: String, buttonTitles: [String]) {
         super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
         guard let contentView = Bundle.main.loadNibNamed(nibName, owner: nil, options: nil)?.first as? UIView else {
             fatalError("Could not load nib file")
         }
-        setUp(contentView: contentView, buttonTitles: buttonTitles, cancelButtonIndex: cancelButtonIndex)
+        setUp(contentView: contentView, buttonTitles: buttonTitles)
+    }
+
+    public init(nibName: String,
+                buttonTitles: String...) {
+        super.init(frame: CGRect(x: 0, y: 0, width: kDefaultWidth, height: kDefaultHeight))
+        guard let contentView = Bundle.main.loadNibNamed(nibName, owner: nil, options: nil)?.first as? UIView else {
+            fatalError("Could not load nib file")
+        }
+        setUp(contentView: contentView, buttonTitles: buttonTitles)
     }
 
     required public init(coder aDecoder: NSCoder) {
@@ -277,7 +289,7 @@ public class SwiftAlertView: UIView {
     }
     
     // handle button click events
-    public func handleButtonClicked(_ handler: @escaping (_ buttonIndex: Int) -> Void) {
+    public func onButtonClicked(_ handler: @escaping (_ buttonIndex: Int) -> Void) {
         onButtonClicked = handler
     }
 }
@@ -290,12 +302,10 @@ extension SwiftAlertView {
     private func setUp(title: String? = nil,
                        message: String? = nil,
                        contentView: UIView? = nil,
-                       buttonTitles: [String] = [],
-                       cancelButtonIndex: Int = 0) {
+                       buttonTitles: [String]) {
         self.title = title
         self.message = message
         self.buttonTitles = buttonTitles
-        self.cancelButtonIndex = cancelButtonIndex
 
         if let contentView = contentView {
             self.contentView = contentView
@@ -539,16 +549,54 @@ extension SwiftAlertView {
     @discardableResult
     public static func show(title: String? = nil,
                             message: String? = nil,
-                            buttonTitles: [String] = [],
-                            cancelButtonIndex: Int = 0,
+                            buttonTitles: [String],
                             configure: ((_ alertView: SwiftAlertView) -> Void)? = nil) -> SwiftAlertView {
-        let alertView = SwiftAlertView(title: title,
-                                       message: message,
-                                       buttonTitles: buttonTitles.isEmpty ? ["OK"] : buttonTitles,
-                                       cancelButtonIndex: cancelButtonIndex)
+        let alertView = SwiftAlertView(title: title, message: message, buttonTitles: buttonTitles)
         configure?(alertView)
         alertView.show()
         return alertView
+    }
+
+    @discardableResult
+    public static func show(title: String? = nil,
+                            message: String? = nil,
+                            buttonTitles: String...,
+                            configure: ((_ alertView: SwiftAlertView) -> Void)? = nil) -> SwiftAlertView {
+        return show(title: title, message: message, buttonTitles: buttonTitles, configure: configure)
+    }
+
+    @discardableResult
+    public static func show(contentView: UIView,
+                            buttonTitles: [String],
+                            configure: ((_ alertView: SwiftAlertView) -> Void)? = nil) -> SwiftAlertView {
+        let alertView = SwiftAlertView(contentView: contentView, buttonTitles: buttonTitles)
+        configure?(alertView)
+        alertView.show()
+        return alertView
+    }
+
+    @discardableResult
+    public static func show(contentView: UIView,
+                            buttonTitles: String...,
+                            configure: ((_ alertView: SwiftAlertView) -> Void)? = nil) -> SwiftAlertView {
+        return show(contentView: contentView, buttonTitles: buttonTitles, configure: configure)
+    }
+
+    @discardableResult
+    public static func show(nibName: String,
+                            buttonTitles: [String],
+                            configure: ((_ alertView: SwiftAlertView) -> Void)? = nil) -> SwiftAlertView {
+        let alertView = SwiftAlertView(nibName: nibName, buttonTitles: buttonTitles)
+        configure?(alertView)
+        alertView.show()
+        return alertView
+    }
+
+    @discardableResult
+    public static func show(nibName: String,
+                            buttonTitles: String...,
+                            configure: ((_ alertView: SwiftAlertView) -> Void)? = nil) -> SwiftAlertView {
+        return show(nibName: nibName, buttonTitles: buttonTitles, configure: configure)
     }
 }
 
