@@ -3,56 +3,113 @@ SwiftAlertView
 
 A powerful customizable Alert View library written in Swift.
 
-Feeling painful when working with UIAlertController, SwiftAlertView is the best alternative for UIKit's UIAlertView and UIAlertController.
-With SwiftAlertView, you can easily make your desired Alert View in some lines of code.
+Feeling painful when working with `UIAlertController` or `SwiftUI alert`, `SwiftAlertView` is the best alternative for UIKit's UIAlertView and UIAlertController.
+With `SwiftAlertView`, you can easily make your desired Alert View in some lines of code.
 
-![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertViewDemo/SwiftAlertViewDemo/Resources/e1.png)      ![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertViewDemo/SwiftAlertViewDemo/Resources/e2.png)
-![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertViewDemo/SwiftAlertViewDemo/Resources/e3.png)
+![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertView/Images/demo.png)
 
-## Getting started
+## Installation
 
-#### Using CocoaPods
-Just add the following line in to your pod file:
+#### CocoaPods
+
+[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. To integrate SwiftAlertView into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+pod 'SwiftAlertView', '~> 2.0.0'
 ```
-pod 'SwiftAlertView', '~> 1.3.0'
+
+#### Carthage
+
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate SwiftAlertView into your Xcode project using Carthage, specify it in your `Cartfile`:
+
+```ogdl
+github "https://github.com/dinhquan/SwiftAlertView" ~> 2.0.0
+```
+
+#### Swift Package Manager
+
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler.
+
+Once you have your Swift package set up, adding SwiftAlertView as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/dinhquan/SwiftAlertView", .upToNextMajor(from: "2.0.0"))
+]
 ```
 
 #### Manually
-Drag and drop the file named ```SwiftAlertView``` in your project and you are done.
+Drag and drop the file named ```SwiftAlertView``` inside `Source` in your project and you are done.
 
 ## Highlight Features
 
 - Initialize the alert view with a custom view.
 - Initialize the alert view with a xib file.
-- Closure and callbacks for handling button touched events.
+- Closures and callbacks for handling button touched events.
 - Change the alert appearance: background color or background image, border radius.
 - Change the title appearance: font, color, margin, spacing, visibility.
 - Change the message appearance: font, color, margin, spacing, visibility.
 - Change the button appearance: font, color.
 - Change the separator appearance: color, visibility.
 - Change the alert appear behaviour and disappear behaviour.
-- APIs are exactly same as UIAlertView.
 - And many more ...
 
 ## Usage
 
-#### Initilization
+### Showing an alert
+
+Showing an alert is easy as pie
 
 ```swift
-// Initialize with title and message
-let alertView = SwiftAlertView(title: "Sample Title", message: "Sample Message", cancelButtonTitle: "Cancel", otherButtonTitles: "Button 1", "Button 2", "Button 3")
-
-// Initialize with a custom view
-let alertView = SwiftAlertView(contentView: customView, cancelButtonTitle: "Cancel", otherButtonTitles: "OK")
-
-// Initialize with nib name
-let alertView = SwiftAlertView(nibName: "CustomView", delegate: self, cancelButtonTitle: "I love this feature")
-
+SwiftAlertView.show(title: "Sample title", message: "Sample message", buttonTitles: "Cancel", "OK")
 ```
 
-#### Show and dismiss
+You can show alert with custom content view
+```swift
+// with xib file
+SwiftAlertView.show(nibName: "CustomView", buttonTitles: "OK")
 
-```objective-c
+// with custom UIView
+SwiftAlertView.show(contentView: customView, buttonTitles: "OK")
+```
+
+Customization
+
+```swift
+SwiftAlertView.show(title: "Sample title",
+                    message: "Sample message",
+                    buttonTitles: "OK", "Cancel") { alert in
+    alert.backgroundColor = .yellow
+    alert.cancelButtonIndex = 1
+    alert.buttonTitleColor = .blue
+}
+```
+
+Handle button clicked events
+```swift
+SwiftAlertView.show(title: "Sample title",
+                    message: "Sample message",
+                    buttonTitles: "OK", "Cancel")
+    .onButtonClicked { buttonIndex in
+        print("Button Clicked At Index \(buttonIndex)")
+    }
+```
+
+### Programmatically creating an alert
+
+Initialize an alert
+
+```swift
+let alertView = SwiftAlertView(title: "Sample Title", message: "Sample Message", buttonTitles: "Cancel", "Button 1", "Button 2", "Button 3")
+
+let alertView = SwiftAlertView(contentView: customView, buttonTitles: "OK")
+
+let alertView = SwiftAlertView(nibName: "CustomView", buttonTitles: "OK")
+```
+
+Show or dismiss
+
+```swift
 // Show at center of screen
 alertView.show()
 
@@ -64,32 +121,18 @@ alertView.dismiss()
 
 ```
 
-#### Use static method to show alert
-
-```swift
-SwiftAlertView.show(title: "Title", message: "Message", cancelButtonTitle: "Cancel", otherButtonTitles: ["OK"], 
-    configureAppearance: { alertView in
-        // customize alert view appearance
-        alertView.backgroundColor = UIColor ( red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1.0 )
-    },
-    clickedButtonAction: { [weak self] buttonIndex in
-        print("Button Clicked At Index \(buttonIndex)")
-    })
-
-```
-
-#### Button touching event handler
+Handle button clicked event
 
 ```swift
 
-alertView.clickedButtonAction = { [weak self] buttonIndex in
+alertView.onButtonClicked = { buttonIndex in
     print("Button Clicked At Index \(buttonIndex)")
 }
-alertView.clickedCancelButtonAction = { [weak self]
+alertView.onCancelButtonClicked = {
     print("Cancel Button Clicked")
 }
-alertView.clickedOtherButtonAction = { [weak self] buttonIndex in
-    print("Other Button Clicked At Index \(buttonIndex)")
+alertView.onActionButtonClicked = { buttonIndex in
+    print("Action Button Clicked At Index \(buttonIndex)")
 }
 
 ```
@@ -97,21 +140,22 @@ alertView.clickedOtherButtonAction = { [weak self] buttonIndex in
 If you don't want to use closures, make your view controller conform ```SwiftAlertViewDelegate``` and use delegate methods:
 
 ```swift
+alertView.delegate = self
 
 func alertView(_ alertView: SwiftAlertView, clickedButtonAtIndex buttonIndex: Int) {
-  println("Button Clicked At Index \(buttonIndex)")
+    println("Button Clicked At Index \(buttonIndex)")
 }
 
 func didPresentAlertView(_ alertView: SwiftAlertView) {
-  println("Did Present Alert View")
+    println("Did Present Alert View")
 }
 
 func didDismissAlertView(_ alertView: SwiftAlertView) {
-  println("Did Dismiss Alert View")
+    println("Did Dismiss Alert View")
 }
 
 ```
-#### Customization
+### Customization
 
 SwiftAlertView can be customized with the following properties:
 
@@ -119,7 +163,7 @@ SwiftAlertView can be customized with the following properties:
 
 public var titleLabel: UILabel! // access titleLabel to customize the title font, color
 public var messageLabel: UILabel! // access messageLabel to customize the message font, color
-
+    
 public var cancelButtonIndex = 0 // default is 0, set this property if you want to change the position of cancel button
 
 public var backgroundImage: UIImage?
@@ -128,15 +172,15 @@ public var backgroundImage: UIImage?
 public var buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1) // to change the title color of all buttons
 public var buttonHeight: CGFloat = 44.0 // default is 44
 
-public var separatorColor: UIColor! // to change the separator color
-public var hideSeparator = false // to hide the separater color
+public var separatorColor = UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0) // to change the separator color
+public var isHideSeparator = false // to hide the separater color
 public var cornerRadius: CGFloat = 8.0 // default is 8 px
 
-public var dismissOnOtherButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on other buttons, set this property to false
-public var highlightOnButtonClicked = true // default is true
-public var dimBackgroundWhenShowing = true // default is true
+public var isDismissOnActionButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on action buttons, set this property to false
+public var isHighlightOnButtonClicked = true // default is true
+public var isDimBackgroundWhenShowing = true // default is true
+public var isDismissOnOutsideTapped = false // default is false
 public var dimAlpha: CGFloat = 0.2 // default is 0.2
-public var dismissOnOutsideClicked = false // default is false
 
 public var appearTime = 0.2 // default is 0.2 second
 public var disappearTime = 0.1 // default is 0.1 second
@@ -151,10 +195,10 @@ public var titleTopMargin: CGFloat = 20.0  // default is 20 px
 public var messageBottomMargin: CGFloat = 20.0// default is 20 px
 public var titleToMessageSpacing: CGFloat = 20.0 // default is 10 px
 
-// closure for handling button clicked action
-public var clickedButtonAction: ((_ buttonIndex: Int) -> (Void))? // all buttons
-public var clickedCancelButtonAction: (() -> Void)? // for cancel button
-public var clickedOtherButtonAction: ((_ buttonIndex: Int) -> (Void))? // sometimes you want to handle the other button click event but don't want to write if/else in clickedButtonAction closure, use this property
+// closures for handling button clicked action
+public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
+public var onCancelClicked: (() -> Void)? // for cancel button
+public var onActionButtonClicked: ((_ buttonIndex: Int) -> (Void))? // sometimes you want to handle the action button clicked event but don't want to write if/else in onButtonClicked closure, use this property
 
 ```
 
