@@ -163,7 +163,7 @@ public class SwiftAlertView: UIView {
     
     // show the alert view at center of screen
     public func show() {
-        if let window: UIWindow = UIApplication.shared.keyWindow {
+        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) {
             show(in: window)
         }
     }
@@ -313,7 +313,7 @@ extension SwiftAlertView {
             titleToMessageSpacing = 0
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(deviceDidRotate(_:)), name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(deviceDidRotate(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     @objc private func deviceDidRotate(_ aNotifitation: NSNotification) -> Void {
@@ -375,13 +375,6 @@ extension SwiftAlertView {
     
     private func setUpDefaultAppearance() {
         self.backgroundColor = UIColor(red: 245.0/255, green: 245.0/255, blue: 245.0/255, alpha: 1)
-
-        if let backgroundImage = backgroundImage {
-            backgroundImageView = UIImageView(frame: self.bounds)
-            backgroundImageView?.image = backgroundImage
-            addSubview(backgroundImageView!)
-            sendSubviewToBack(backgroundImageView!)
-        }
         
         if title != nil {
             titleLabel.numberOfLines = 0
@@ -419,6 +412,13 @@ extension SwiftAlertView {
     }
     
     private func layoutElementBeforeShowing() {
+        if let backgroundImage = backgroundImage {
+            backgroundImageView = UIImageView(frame: self.bounds)
+            backgroundImageView?.image = backgroundImage
+            addSubview(backgroundImageView!)
+            sendSubviewToBack(backgroundImageView!)
+        }
+        
         var i = 0
         for button in buttons {
             button.tag = i
