@@ -428,11 +428,17 @@ extension SwiftAlertView {
             addSubview(backgroundImageView!)
             sendSubviewToBack(backgroundImageView!)
         }
-        
+
         var i = 0
         for button in buttons {
             button.tag = i
             i += 1
+
+            if button.tag == cancelButtonIndex {
+                button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+            } else {
+                button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+            }
             
             if !buttonTitleColor.isEqual(UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)) {
                 button.setTitleColor(buttonTitleColor, for: .normal)

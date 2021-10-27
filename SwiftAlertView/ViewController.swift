@@ -109,13 +109,6 @@ final class ViewController: UITableViewController {
             alertView.show()
 
         case 7:
-            SwiftAlertView.show(nibName: "CustomView", buttonTitles: "OK")
-            SwiftAlertView.show(title: "Sample title",
-                                message: "Sample message",
-                                buttonTitles: "OK", "Cancel")
-                .onButtonClicked { buttonIndex in
-                    print("Button Clicked At Index \(buttonIndex)")
-                }
             SwiftAlertView.show(title: "Lorem ipsum",
                                 message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", buttonTitles: "Cancel", "OK") { alertView in
                 alertView.backgroundColor = UIColor(red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1)
