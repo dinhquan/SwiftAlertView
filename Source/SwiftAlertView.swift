@@ -68,7 +68,8 @@ public class SwiftAlertView: UIView {
     public var isHighlightOnButtonClicked = true // default is true
     public var isDimBackgroundWhenShowing = true // default is true
     public var isDismissOnOutsideTapped = false // default is false
-    public var dimAlpha: CGFloat = 0.2 // default is 0.2
+    public var dimAlpha: CGFloat = 0.4 // default is 0.2
+    public var dimBackgroundColor: UIColor? = .init(white: 0, alpha: 0.4) // default is 0.2
 
     public var appearTime = 0.2 // default is 0.2 second
     public var disappearTime = 0.1 // default is 0.1 second
@@ -81,7 +82,7 @@ public class SwiftAlertView: UIView {
     public var messageSideMargin: CGFloat = 20.0  // default is 20 px
     public var titleTopMargin: CGFloat = 20.0  // default is 20 px
     public var messageBottomMargin: CGFloat = 20.0// default is 20 px
-    public var titleToMessageSpacing: CGFloat = 20.0 // default is 10 px
+    public var titleToMessageSpacing: CGFloat = 20.0 // default is 20 px
 
     // closures for handling button clicked action
     public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
@@ -188,7 +189,11 @@ public class SwiftAlertView: UIView {
 
         if isDimBackgroundWhenShowing {
             dimView = UIView(frame: view.bounds)
-            dimView!.backgroundColor = UIColor(white: 0, alpha: CGFloat(dimAlpha))
+            if let color = dimBackgroundColor {
+                dimView!.backgroundColor = color
+            } else {
+                dimView!.backgroundColor = UIColor(white: 0, alpha: CGFloat(dimAlpha))
+            }
             view.addSubview(dimView!)
             let recognizer = UITapGestureRecognizer(target: self, action: #selector(outsideTapped(_:)))
             dimView!.addGestureRecognizer(recognizer)

@@ -111,7 +111,7 @@ final class ViewController: UITableViewController {
         case 7:
             SwiftAlertView.show(title: "Lorem ipsum",
                                 message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", buttonTitles: "Cancel", "OK") { alertView in
-                alertView.backgroundColor = UIColor(red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1)
+                    alertView.backgroundColor = UIColor(red: 0.8733, green: 0.5841, blue: 0.909, alpha: 1)
                     alertView.titleLabel.font = UIFont.systemFont(ofSize: 20)
                 }
                 .onButtonClicked { buttonIndex in
