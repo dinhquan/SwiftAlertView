@@ -78,11 +78,17 @@ public class SwiftAlertView: UIView {
     public var disappearType: DisappearType = .default // to change the disappear type
     
     // customize the margin & spacing of title & message
-    public var titleSideMargin: CGFloat = 20.0  // default is 20 px
-    public var messageSideMargin: CGFloat = 20.0  // default is 20 px
-    public var titleTopMargin: CGFloat = 20.0  // default is 20 px
-    public var messageBottomMargin: CGFloat = 20.0// default is 20 px
-    public var titleToMessageSpacing: CGFloat = 20.0 // default is 20 px
+    public var titleSideMargin: CGFloat = 20.0  // default is 20
+    public var messageSideMargin: CGFloat = 20.0  // default is 20
+    public var titleTopMargin: CGFloat = 20.0  // default is 20
+    public var messageBottomMargin: CGFloat = 20.0 // default is 20
+    public var titleToMessageSpacing: CGFloat = 20.0 // default is 20
+    
+    // customize text fields
+    public var textFieldHeight: CGFloat = 34.0 // default is 32
+    public var textFieldSideMargin: CGFloat = 15.0 // default is 15
+    public var textFieldBottomMargin: CGFloat = 15.0 // default is 15
+    public var textFieldSpacing: CGFloat = 10.0 // default is 10
 
     // closures for handling button clicked action
     public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
@@ -111,6 +117,7 @@ public class SwiftAlertView: UIView {
 
     private var contentView: UIView?
     private var buttons: [UIButton] = []
+    private var textFields: [UITextField] = []
     private var backgroundImageView: UIImageView?
     private var dimView: UIView?
     private var title: String?
@@ -172,6 +179,15 @@ public class SwiftAlertView: UIView {
         }
         
         return nil
+    }
+    
+    public func addTextField(configurationHandler: (UITextField) -> Void) {
+        let textField = UITextField(frame: CGRect(x: textFieldSideMargin, y: 0, width: viewWidth - textFieldSideMargin * 2, height: textFieldHeight))
+        textField.borderStyle = .roundedRect
+        textField.delegate = self
+        configurationHandler(textField)
+        textFields.append(textField)
+        addSubview(textField)
     }
     
     // show the alert view at center of screen
@@ -467,7 +483,14 @@ extension SwiftAlertView {
             messageLabel.center = CGPoint(x: viewWidth/2, y: titleTopMargin + titleLabel.frame.size.height + titleToMessageSpacing + messageLabel.frame.size.height/2)
         }
         
-        let topPartHeight = (contentView == nil) ? (titleTopMargin + titleLabel.frame.size.height + titleToMessageSpacing + messageLabel.frame.size.height + messageBottomMargin) : contentView!.frame.size.height
+        let titleMessageHeight = titleTopMargin + titleLabel.frame.size.height + titleToMessageSpacing + messageLabel.frame.size.height + messageBottomMargin
+        for i in 0..<textFields.count {
+            let textField = textFields[i]
+            textField.frame = CGRect(x: textField.frame.minX, y: titleMessageHeight + CGFloat(i) * (textField.frame.height + textFieldSpacing), width: textField.frame.width, height: textField.frame.height)
+        }
+        
+        let textFieldPartHeight = textFields.isEmpty ? 0 : (textFields[0].frame.height + textFieldSpacing) * CGFloat(textFields.count) + textFieldBottomMargin - textFieldSpacing
+        let topPartHeight = (contentView == nil) ? (titleMessageHeight + textFieldPartHeight) : contentView!.frame.size.height
         
         if buttons.count == 2 {
             viewHeight = topPartHeight + buttonHeight
@@ -489,7 +512,6 @@ extension SwiftAlertView {
         } else {
             viewHeight = topPartHeight + buttonHeight * CGFloat(buttons.count)
             var j = 1
-            
             for button in buttons.reversed() {
                 button.frame = CGRect(x: 0, y: viewHeight-buttonHeight*CGFloat(j), width: viewWidth, height: buttonHeight)
                 j += 1
@@ -621,4 +643,11 @@ extension SwiftAlertView {
     
     @objc optional func willDismissAlertView(_ alertView: SwiftAlertView) // before animation and showing view
     @objc optional func didDismissAlertView(_ alertView: SwiftAlertView) // after animation
+}
+
+extension SwiftAlertView: UITextFieldDelegate {
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }
