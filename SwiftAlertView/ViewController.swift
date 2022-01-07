@@ -110,7 +110,7 @@ final class ViewController: UITableViewController {
 
         case 7:
             SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "OK") { alertView in
-                alertView.titleLabel.font = UIFont.systemFont(ofSize: 20)
+                alertView.titleLabel.font = .boldSystemFont(ofSize: 16)
                 alertView.addTextField { textField in
                     textField.placeholder = "Username"
                 }

@@ -64,6 +64,7 @@ public class SwiftAlertView: UIView {
     public var isHideSeparator = false // to hide the separater color
     public var cornerRadius: CGFloat = 8.0 // default is 8 px
 
+    public var isVisualEffectEnabled = true
     public var isDismissOnActionButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on action buttons, set this property to false
     public var isHighlightOnButtonClicked = true // default is true
     public var isDimBackgroundWhenShowing = true // default is true
@@ -109,10 +110,9 @@ public class SwiftAlertView: UIView {
     private let kDefaultTitleTopMargin: CGFloat = 20.0
     private let kDefaultTitleToMessageSpacing: CGFloat = 10.0
     private let kDefaultMessageBottomMargin: CGFloat = 20.0
-    private let kDefaultDimAlpha: CGFloat = 0.4
+    private let kDefaultDimAlpha: CGFloat = 0.2
     private let kDefaultAppearTime = 0.2
     private let kDefaultDisappearTime = 0.1
-
 
     // MARK: Private Properties
 
@@ -126,7 +126,7 @@ public class SwiftAlertView: UIView {
     private var buttonTitles: [String] = []
     private var viewWidth: CGFloat = 0
     private var viewHeight: CGFloat = 0
-    
+    private let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     
     // MARK: Initialization
 
@@ -219,6 +219,11 @@ public class SwiftAlertView: UIView {
             view.addSubview(dimView!)
             let recognizer = UITapGestureRecognizer(target: self, action: #selector(outsideTapped(_:)))
             dimView!.addGestureRecognizer(recognizer)
+        }
+        
+        if isVisualEffectEnabled {
+            visualEffectView.frame = bounds
+            insertSubview(visualEffectView, at: 0)
         }
         
         if hasTextField {
