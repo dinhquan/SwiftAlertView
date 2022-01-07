@@ -118,7 +118,7 @@ final class ViewController: UITableViewController {
                     textField.placeholder = "Password"
                 }
             }
-            .onButtonClicked { buttonIndex in
+            .onButtonClicked { _, buttonIndex in
                 print("Button Clicked At Index \(buttonIndex)")
             }
 

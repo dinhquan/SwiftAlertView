@@ -64,7 +64,7 @@ public class SwiftAlertView: UIView {
     public var isHideSeparator = false // to hide the separater color
     public var cornerRadius: CGFloat = 8.0 // default is 8 px
 
-    public var isVisualEffectEnabled = true
+    public var isVisualEffectBackgroundEnabled = true
     public var isDismissOnActionButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on action buttons, set this property to false
     public var isHighlightOnButtonClicked = true // default is true
     public var isDimBackgroundWhenShowing = true // default is true
@@ -182,11 +182,20 @@ public class SwiftAlertView: UIView {
         return nil
     }
     
-    public func addTextField(configurationHandler: (UITextField) -> Void) {
+    // access the text fields to customize their font & color
+    public func textField(at index: Int) -> UITextField? {
+        if index >= 0 && index < textFields.count {
+            return textFields[index]
+        }
+        
+        return nil
+    }
+    
+    public func addTextField(configurationHandler: ((UITextField) -> Void)? = nil) {
         let textField = UITextField(frame: CGRect(x: textFieldSideMargin, y: 0, width: viewWidth - textFieldSideMargin * 2, height: textFieldHeight))
         textField.borderStyle = .roundedRect
         textField.delegate = self
-        configurationHandler(textField)
+        configurationHandler?(textField)
         textFields.append(textField)
         addSubview(textField)
     }
@@ -221,7 +230,7 @@ public class SwiftAlertView: UIView {
             dimView!.addGestureRecognizer(recognizer)
         }
         
-        if isVisualEffectEnabled {
+        if isVisualEffectBackgroundEnabled && backgroundColor == nil {
             visualEffectView.frame = bounds
             insertSubview(visualEffectView, at: 0)
         }
@@ -341,8 +350,10 @@ public class SwiftAlertView: UIView {
     }
     
     // handle button click events
-    public func onButtonClicked(_ handler: @escaping (_ buttonIndex: Int) -> Void) {
-        onButtonClicked = handler
+    public func onButtonClicked(_ handler: @escaping (_ alertView: SwiftAlertView, _ buttonIndex: Int) -> Void) {
+        self.onButtonClicked = { index in
+            handler(self, index)
+        }
     }
 }
 
@@ -374,14 +385,6 @@ extension SwiftAlertView {
         if title == nil || message == nil {
             titleToMessageSpacing = 0
         }
-
-        NotificationCenter.default.addObserver(self, selector: #selector(deviceDidRotate(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
-    }
-    
-    @objc private func deviceDidRotate(_ aNotifitation: NSNotification) -> Void {
-        dimView?.removeFromSuperview()
-        dimView = nil
-        show()
     }
 
     private func setUpDefaultValue() {
