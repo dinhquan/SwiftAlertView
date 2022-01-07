@@ -17,7 +17,7 @@ final class ViewController: UITableViewController {
                                 "Init From Nib File",
                                 "Custom Background Image",
                                 "Customize Appearance Type",
-                                "Static Method"]
+                                "Add Text Fields"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,17 +105,17 @@ final class ViewController: UITableViewController {
             alertView.appearType = .flyFromTop
             alertView.disappearType = .flyToBottom
             alertView.appearTime = 0.3
-            alertView.disappearTime = 0.3
+            alertView.disappearTime = 0.2
             alertView.show()
 
         case 7:
-            SwiftAlertView.show(title: "Lorem ipsum", buttonTitles: "Cancel", "OK") { alertView in
+            SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "OK") { alertView in
                 alertView.titleLabel.font = UIFont.systemFont(ofSize: 20)
                 alertView.addTextField { textField in
-                    textField.placeholder = "Abc"
+                    textField.placeholder = "Username"
                 }
                 alertView.addTextField { textField in
-                    textField.placeholder = "Abc"
+                    textField.placeholder = "Password"
                 }
             }
             .onButtonClicked { buttonIndex in

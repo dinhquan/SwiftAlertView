@@ -71,7 +71,7 @@ public class SwiftAlertView: UIView {
     public var dimAlpha: CGFloat = 0.4 // default is 0.2
     public var dimBackgroundColor: UIColor? = .init(white: 0, alpha: 0.4) // default is 0.2
 
-    public var appearTime = 0.2 // default is 0.2 second
+    public var appearTime = 0.3 // default is 0.2 second
     public var disappearTime = 0.1 // default is 0.1 second
 
     public var appearType: AppearType = .default // to change the appear type
@@ -89,6 +89,7 @@ public class SwiftAlertView: UIView {
     public var textFieldSideMargin: CGFloat = 15.0 // default is 15
     public var textFieldBottomMargin: CGFloat = 15.0 // default is 15
     public var textFieldSpacing: CGFloat = 10.0 // default is 10
+    public var isFocusTextFieldWhenShowing = true // default is true
 
     // closures for handling button clicked action
     public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
@@ -201,7 +202,12 @@ public class SwiftAlertView: UIView {
     public func show(in view: UIView) {
         layoutElementBeforeShowing()
         
-        frame = CGRect(x: (view.frame.size.width - viewWidth)/2, y: (view.frame.size.height - viewHeight)/2, width: viewWidth, height: viewHeight)
+        let hasTextField = isFocusTextFieldWhenShowing && !textFields.isEmpty
+        var showY = (view.frame.size.height - viewHeight)/2
+        if hasTextField {
+            showY -= 150
+        }
+        frame = CGRect(x: (view.frame.size.width - viewWidth)/2, y: showY, width: viewWidth, height: viewHeight)
 
         if isDimBackgroundWhenShowing {
             dimView = UIView(frame: view.bounds)
@@ -215,6 +221,10 @@ public class SwiftAlertView: UIView {
             dimView!.addGestureRecognizer(recognizer)
         }
         
+        if hasTextField {
+            textFields[0].becomeFirstResponder()
+        }
+        
         delegate?.willPresentAlertView?(self)
 
         view.addSubview(self)
@@ -222,14 +232,26 @@ public class SwiftAlertView: UIView {
         
         switch appearType {
         case .default:
-            transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-            alpha = 0.6
+            if hasTextField {
+                alpha = 0
+                transform = CGAffineTransform(translationX: 0, y: 60)
+                    .concatenating(CGAffineTransform(scaleX: 1.1, y: 1.1))
+                UIView.animate(withDuration: appearTime, delay: 0, options: .curveEaseInOut) {
+                    self.transform = CGAffineTransform.identity
+                    self.alpha = 1
+                } completion: { _ in
+                    self.delegate?.didPresentAlertView?(self)
+                }
+            } else {
+                transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+                alpha = 0.6
 
-            UIView.animate(withDuration: appearTime) {
-                self.transform = CGAffineTransform.identity
-                self.alpha = 1
-            } completion: { _ in
-                self.delegate?.didPresentAlertView?(self)
+                UIView.animate(withDuration: appearTime) {
+                    self.transform = CGAffineTransform.identity
+                    self.alpha = 1
+                } completion: { _ in
+                    self.delegate?.didPresentAlertView?(self)
+                }
             }
         case .fadeIn:
             alpha = 0
@@ -264,6 +286,10 @@ public class SwiftAlertView: UIView {
     public func dismiss() {
         self.delegate?.willDismissAlertView?(self)
 
+        for textField in textFields {
+            textField.resignFirstResponder()
+        }
+        
         if dimView != nil {
             UIView.animate(withDuration: disappearTime) {
                 self.dimView?.alpha = 0
