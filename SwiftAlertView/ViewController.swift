@@ -17,7 +17,7 @@ final class ViewController: UITableViewController {
                                 "Custom Content View",
                                 "Init From Nib File",
                                 "Custom Background Image",
-                                "Customize Appearance Type"]
+                                "Customize Transition Type"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -117,9 +117,8 @@ final class ViewController: UITableViewController {
             let alertView = SwiftAlertView(title: "Lorem ipsum",
                                            message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
                                            buttonTitles: ["Cancel", "Button 1", "Button 2", "Button 3"])
-            alertView.appearType = .flyFromTop
-            alertView.disappearType = .flyToBottom
-            alertView.appearTime = 0.3
+            alertView.transitionType = .vertical
+            alertView.appearTime = 0.2
             alertView.disappearTime = 0.2
             alertView.show()
         default:
@@ -134,10 +133,8 @@ final class ViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-                return demoTitles.count
-
+        return demoTitles.count
     }
-
 }
 
 // MARK: SwiftAlertViewDelegate

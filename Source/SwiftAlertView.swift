@@ -36,26 +36,18 @@ public class SwiftAlertView: UIView {
         case dark
     }
 
-    public enum AppearType {
+    public enum TransitionType {
         case `default`
-        case fadeIn
-        case flyFromTop
-        case flyFromLeft
-    }
-
-    public enum DisappearType {
-        case `default`
-        case fadeOut
-        case flyToBottom
-        case flyToRight
+        case fade
+        case vertical
     }
 
     
     // MARK: Public Properties
     
-    public weak var delegate: SwiftAlertViewDelegate? // delegate
+    public weak var delegate: SwiftAlertViewDelegate?
     
-    public var style: Style = .auto { // default is base on system color
+    public var style: Style = .auto { // default is based on system color
         didSet {
             updateAlertStyle()
         }
@@ -64,44 +56,42 @@ public class SwiftAlertView: UIView {
     public var titleLabel: UILabel! // access titleLabel to customize the title font, color
     public var messageLabel: UILabel! // access messageLabel to customize the message font, color
     
-    public var cancelButtonIndex = 0 // default is 0, set this property if you want to change the position of cancel button
-
     public var backgroundImage: UIImage?
     // public var backgroundColor: UIColor? // inherits from UIView
     
+    public var cancelButtonIndex = 0 // default is 0, set this property if you want to change the position of cancel button
     public var buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1) // to change the title color of all buttons
-    public var buttonHeight: CGFloat = 44.0 // default is 44
+    public var buttonHeight: CGFloat = 44.0
     
     public var separatorColor = UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0) // to change the separator color
-    public var isHideSeparator = false // to hide the separater color
-    public var cornerRadius: CGFloat = 12.0 // default is 8 px
+    public var isHideSeparator = false
+    public var cornerRadius: CGFloat = 12.0
 
     public var isDismissOnActionButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on action buttons, set this property to false
-    public var isHighlightOnButtonClicked = true // default is true
-    public var isDimBackgroundWhenShowing = true // default is true
-    public var isDismissOnOutsideTapped = false // default is false
-    public var dimAlpha: CGFloat = 0.4 // default is 0.2
-    public var dimBackgroundColor: UIColor? = .init(white: 0, alpha: 0.4) // default is 0.2
+    public var isHighlightOnButtonClicked = true
+    public var isDimBackgroundWhenShowing = true
+    public var isDismissOnOutsideTapped = false
+    public var dimAlpha: CGFloat = 0.4
+    public var dimBackgroundColor: UIColor? = .init(white: 0, alpha: 0.4)
 
-    public var appearTime = 0.3 // default is 0.2 second
-    public var disappearTime = 0.1 // default is 0.1 second
+    public var appearTime = 0.2
+    public var disappearTime = 0.1
 
-    public var appearType: AppearType = .default // to change the appear type
-    public var disappearType: DisappearType = .default // to change the disappear type
+    public var transitionType: TransitionType = .default
     
     // customize the margin & spacing of title & message
-    public var titleSideMargin: CGFloat = 20.0  // default is 20
-    public var messageSideMargin: CGFloat = 20.0  // default is 20
-    public var titleTopMargin: CGFloat = 20.0  // default is 20
-    public var messageBottomMargin: CGFloat = 20.0 // default is 20
-    public var titleToMessageSpacing: CGFloat = 20.0 // default is 20
+    public var titleSideMargin: CGFloat = 20.0
+    public var messageSideMargin: CGFloat = 20.0
+    public var titleTopMargin: CGFloat = 20.0
+    public var messageBottomMargin: CGFloat = 20.0
+    public var titleToMessageSpacing: CGFloat = 20.0
     
     // customize text fields
-    public var textFieldHeight: CGFloat = 34.0 // default is 32
-    public var textFieldSideMargin: CGFloat = 15.0 // default is 15
-    public var textFieldBottomMargin: CGFloat = 15.0 // default is 15
-    public var textFieldSpacing: CGFloat = 10.0 // default is 10
-    public var isFocusTextFieldWhenShowing = true // default is true
+    public var textFieldHeight: CGFloat = 34.0
+    public var textFieldSideMargin: CGFloat = 15.0
+    public var textFieldBottomMargin: CGFloat = 15.0
+    public var textFieldSpacing: CGFloat = 10.0
+    public var isFocusTextFieldWhenShowing = true
 
     // closures for handling button clicked action
     public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
@@ -254,7 +244,7 @@ public class SwiftAlertView: UIView {
         view.addSubview(self)
         view.bringSubviewToFront(self)
         
-        switch appearType {
+        switch transitionType {
         case .default:
             if isFocusTextField {
                 alpha = 0
@@ -277,7 +267,7 @@ public class SwiftAlertView: UIView {
                     self.delegate?.didPresentAlertView?(self)
                 }
             }
-        case .fadeIn:
+        case .fade:
             alpha = 0
 
             UIView.animate(withDuration: appearTime, delay: 0, options: .curveEaseInOut) {
@@ -285,18 +275,9 @@ public class SwiftAlertView: UIView {
             } completion: { _ in
                 self.delegate?.didPresentAlertView?(self)
             }
-        case .flyFromTop:
+        case .vertical:
             let tempFrame = frame
-            frame = CGRect(x: frame.origin.x, y: 0 - frame.size.height - 10, width: frame.size.width, height: frame.size.height)
-
-            UIView.animate(withDuration: appearTime, delay: 0, options: .curveEaseInOut) {
-                self.frame = tempFrame
-            } completion: { _ in
-                self.delegate?.didPresentAlertView?(self)
-            }
-        case .flyFromLeft:
-            let tempFrame = frame
-            frame = CGRect(x: 0 - frame.size.width - 10, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
+            frame = CGRect(x: frame.origin.x, y: superview!.frame.size.height + 10, width: frame.size.width, height: frame.size.height)
 
             UIView.animate(withDuration: appearTime, delay: 0, options: .curveEaseInOut) {
                 self.frame = tempFrame
@@ -323,7 +304,7 @@ public class SwiftAlertView: UIView {
             }
         }
 
-        switch disappearType {
+        switch transitionType {
         case .default:
             transform = CGAffineTransform.identity
 
@@ -333,7 +314,7 @@ public class SwiftAlertView: UIView {
                 self.removeFromSuperview()
                 self.delegate?.didDismissAlertView?(self)
             }
-        case .fadeOut:
+        case .fade:
             self.alpha = 1
 
             UIView.animate(withDuration: disappearTime, delay: 0.02, options: .curveEaseOut) {
@@ -342,16 +323,9 @@ public class SwiftAlertView: UIView {
                 self.removeFromSuperview()
                 self.delegate?.didDismissAlertView?(self)
             }
-        case .flyToBottom:
+        case .vertical:
             UIView.animate(withDuration: disappearTime, delay: 0.02, options: .curveEaseOut) {
                 self.frame = CGRect(x: self.frame.origin.x, y: self.superview!.frame.size.height + 10, width: self.frame.size.width, height: self.frame.size.height)
-            } completion: { _ in
-                self.removeFromSuperview()
-                self.delegate?.didDismissAlertView?(self)
-            }
-        case .flyToRight:
-            UIView.animate(withDuration: disappearTime, delay: 0.02, options: .curveEaseOut) {
-                self.frame = CGRect(x: self.superview!.frame.size.width + 10, y: self.frame.origin.y, width: self.frame.size.width, height: self.frame.size.height)
             } completion: { _ in
                 self.removeFromSuperview()
                 self.delegate?.didDismissAlertView?(self)
@@ -362,6 +336,12 @@ public class SwiftAlertView: UIView {
     // handle button click events
     public func onButtonClicked(_ handler: @escaping (_ alertView: SwiftAlertView, _ buttonIndex: Int) -> Void) {
         self.onButtonClicked = { index in
+            handler(self, index)
+        }
+    }
+    
+    public func onActionButtonClicked(_ handler: @escaping (_ alertView: SwiftAlertView, _ buttonIndex: Int) -> Void) {
+        self.onActionButtonClicked = { index in
             handler(self, index)
         }
     }
@@ -416,8 +396,7 @@ extension SwiftAlertView {
         cornerRadius = kDefaultCornerRadius
         appearTime = kDefaultAppearTime
         disappearTime = kDefaultDisappearTime
-        appearType = .default
-        disappearType = .default
+        transitionType = .default
         buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
         layer.cornerRadius = CGFloat(cornerRadius)
     }
