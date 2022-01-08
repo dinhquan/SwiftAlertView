@@ -15,7 +15,7 @@ With `SwiftAlertView`, you can easily make your desired Alert View in some lines
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. To integrate SwiftAlertView into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'SwiftAlertView', '~> 2.0.1'
+pod 'SwiftAlertView', '~> 2.1.0'
 ```
 
 #### Carthage
@@ -23,7 +23,7 @@ pod 'SwiftAlertView', '~> 2.0.1'
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate SwiftAlertView into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "https://github.com/dinhquan/SwiftAlertView" ~> 2.0.1
+github "https://github.com/dinhquan/SwiftAlertView" ~> 2.1.0
 ```
 
 #### Swift Package Manager
@@ -34,7 +34,7 @@ Once you have your Swift package set up, adding SwiftAlertView as a dependency i
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/dinhquan/SwiftAlertView", .upToNextMajor(from: "2.0.1"))
+    .package(url: "https://github.com/dinhquan/SwiftAlertView", .upToNextMajor(from: "2.1.0"))
 ]
 ```
 
@@ -84,7 +84,7 @@ Handle button clicked events
 SwiftAlertView.show(title: "Sample title",
                     message: "Sample message",
                     buttonTitles: "OK", "Cancel") {
-    alertView.style = .dark // 
+    alertView.style = .dark
 }
 .onButtonClicked { _, buttonIndex in
     print("Button Clicked At Index \(buttonIndex)")
@@ -183,10 +183,11 @@ func didDismissAlertView(_ alertView: SwiftAlertView) {
 SwiftAlertView can be customized with the following properties:
 
 ```swift
+public var style: Style = .auto // default is base on system color
 
 public var titleLabel: UILabel! // access titleLabel to customize the title font, color
 public var messageLabel: UILabel! // access messageLabel to customize the message font, color
-    
+
 public var cancelButtonIndex = 0 // default is 0, set this property if you want to change the position of cancel button
 
 public var backgroundImage: UIImage?
@@ -197,32 +198,34 @@ public var buttonHeight: CGFloat = 44.0 // default is 44
 
 public var separatorColor = UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0) // to change the separator color
 public var isHideSeparator = false // to hide the separater color
-public var cornerRadius: CGFloat = 8.0 // default is 8 px
+public var cornerRadius: CGFloat = 12.0 // default is 8 px
 
 public var isDismissOnActionButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on action buttons, set this property to false
 public var isHighlightOnButtonClicked = true // default is true
 public var isDimBackgroundWhenShowing = true // default is true
 public var isDismissOnOutsideTapped = false // default is false
-public var dimAlpha: CGFloat = 0.2 // default is 0.2
+public var dimAlpha: CGFloat = 0.4 // default is 0.2
+public var dimBackgroundColor: UIColor? = .init(white: 0, alpha: 0.4) // default is 0.2
 
-public var appearTime = 0.2 // default is 0.2 second
+public var appearTime = 0.3 // default is 0.2 second
 public var disappearTime = 0.1 // default is 0.1 second
 
 public var appearType: AppearType = .default // to change the appear type
 public var disappearType: DisappearType = .default // to change the disappear type
 
 // customize the margin & spacing of title & message
-public var titleSideMargin: CGFloat = 20.0  // default is 20 px
-public var messageSideMargin: CGFloat = 20.0  // default is 20 px
-public var titleTopMargin: CGFloat = 20.0  // default is 20 px
-public var messageBottomMargin: CGFloat = 20.0// default is 20 px
-public var titleToMessageSpacing: CGFloat = 20.0 // default is 10 px
+public var titleSideMargin: CGFloat = 20.0  // default is 20
+public var messageSideMargin: CGFloat = 20.0  // default is 20
+public var titleTopMargin: CGFloat = 20.0  // default is 20
+public var messageBottomMargin: CGFloat = 20.0 // default is 20
+public var titleToMessageSpacing: CGFloat = 20.0 // default is 20
 
-// closures for handling button clicked action
-public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
-public var onCancelClicked: (() -> Void)? // for cancel button
-public var onActionButtonClicked: ((_ buttonIndex: Int) -> (Void))? // sometimes you want to handle the action button clicked event but don't want to write if/else in onButtonClicked closure, use this property
-
+// customize text fields
+public var textFieldHeight: CGFloat = 34.0 // default is 32
+public var textFieldSideMargin: CGFloat = 15.0 // default is 15
+public var textFieldBottomMargin: CGFloat = 15.0 // default is 15
+public var textFieldSpacing: CGFloat = 10.0 // default is 10
+public var isFocusTextFieldWhenShowing = true // default is true
 ```
 
 ## Contributing
