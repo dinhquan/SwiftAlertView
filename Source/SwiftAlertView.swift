@@ -112,6 +112,7 @@ public class SwiftAlertView: UIView {
     private let kDefaultDimAlpha: CGFloat = 0.2
     private let kDefaultAppearTime = 0.2
     private let kDefaultDisappearTime = 0.1
+    private var kMoveUpWithKeyboardDistance: CGFloat = 150.0
 
     // MARK: Private Properties
 
@@ -125,7 +126,8 @@ public class SwiftAlertView: UIView {
     private var buttonTitles: [String] = []
     private var viewWidth: CGFloat = 0
     private var viewHeight: CGFloat = 0
-    
+    private var isMoveUpWithKeyboard = false
+
     // MARK: Initialization
 
     public init(title: String? = nil, message: String? = nil, buttonTitles: [String]) {
@@ -209,11 +211,13 @@ public class SwiftAlertView: UIView {
     public func show(in view: UIView) {
         layoutElementBeforeShowing()
         
-        let hasTextField = isFocusTextFieldWhenShowing && !textFields.isEmpty
+        let isFocusTextField = isFocusTextFieldWhenShowing && !textFields.isEmpty
         var showY = (view.frame.size.height - viewHeight)/2
-        if hasTextField {
-            showY -= 150
+        if isFocusTextField {
+            showY -= kMoveUpWithKeyboardDistance
+            isMoveUpWithKeyboard = true
         }
+        
         frame = CGRect(x: (view.frame.size.width - viewWidth)/2, y: showY, width: viewWidth, height: viewHeight)
 
         if isDimBackgroundWhenShowing {
@@ -228,7 +232,7 @@ public class SwiftAlertView: UIView {
             dimView!.addGestureRecognizer(recognizer)
         }
         
-        if hasTextField {
+        if isFocusTextField {
             textFields[0].becomeFirstResponder()
         }
         
@@ -239,7 +243,7 @@ public class SwiftAlertView: UIView {
         
         switch appearType {
         case .default:
-            if hasTextField {
+            if isFocusTextField {
                 alpha = 0
                 transform = CGAffineTransform(translationX: 0, y: 60)
                     .concatenating(CGAffineTransform(scaleX: 1.1, y: 1.1))
@@ -424,7 +428,7 @@ extension SwiftAlertView {
         }
 
         for buttonTitle in buttonTitles {
-            let button = UIButton(type: .custom)
+            let button = HighlightButton(type: .custom)
             button.setTitle(buttonTitle, for: .normal)
             buttons.append(button)
             addSubview(button)
@@ -555,15 +559,6 @@ extension SwiftAlertView {
     // MARK: Actions
     
     @objc private func buttonClicked(_ button: UIButton) {
-        if (isHighlightOnButtonClicked) {
-            let originColor = button.backgroundColor?.withAlphaComponent(0)
-            button.backgroundColor = button.backgroundColor?.withAlphaComponent(0.1)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-                button.backgroundColor = originColor
-            })
-        }
-        
         let buttonIndex = button.tag
         
         delegate?.alertView?(self, clickedButtonAtIndex: buttonIndex)
@@ -676,5 +671,48 @@ extension SwiftAlertView: UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        if isMoveUpWithKeyboard { return }
+        self.isMoveUpWithKeyboard = true
+        UIView.animate(withDuration: 0.2) {
+            self.frame = self.frame.offsetBy(dx: 0, dy: -self.kMoveUpWithKeyboardDistance)
+        }
+    }
+    
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+        if !isMoveUpWithKeyboard { return }
+        self.isMoveUpWithKeyboard = false
+        UIView.animate(withDuration: 0.2) {
+            self.frame = self.frame.offsetBy(dx: 0, dy: self.kMoveUpWithKeyboardDistance)
+        }
+    }
+}
+
+final class HighlightButton: UIButton {
+    @IBInspectable var isSetBackgroundOnParent: Bool = false {
+        didSet {
+            _isSetBackgroundOnParent = isSetBackgroundOnParent
+        }
+    }
+    
+    var _isSetBackgroundOnParent = false
+
+    private var _view: UIView {
+        _isSetBackgroundOnParent ? (superview ?? self) : self
+    }
+    
+    var bgColor: UIColor = .clear
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        bgColor = _view.backgroundColor ?? .clear
+    }
+    
+    override public var isHighlighted: Bool {
+        didSet {
+            let highlightedColor = bgColor == .clear ? UIColor(white: 0.2, alpha: 0.1) : bgColor.withAlphaComponent(0.66)
+            _view.backgroundColor = isHighlighted ? highlightedColor : bgColor
+        }
     }
 }
