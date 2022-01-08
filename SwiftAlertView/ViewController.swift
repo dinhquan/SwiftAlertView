@@ -10,14 +10,14 @@ import UIKit
 
 final class ViewController: UITableViewController {
 
-    let demoTitles: [String] = ["No Title",
+    let demoTitles: [String] = ["Dark Mode",
                                 "More Than Two Buttons",
+                                "Add Text Fields",
                                 "Customize Font & Color",
                                 "Custom Content View",
                                 "Init From Nib File",
                                 "Custom Background Image",
-                                "Customize Appearance Type",
-                                "Add Text Fields"]
+                                "Customize Appearance Type"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,10 +30,10 @@ final class ViewController: UITableViewController {
 
         switch indexPath.row {
         case 0:
-            let message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            let alertView = SwiftAlertView(message: message,
+            let alertView = SwiftAlertView(title: "Lorem ipsum",
+                                           message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
                                            buttonTitles: "Cancel", "Ok")
-
+            alertView.style = .dark
             alertView.onButtonClicked = { buttonIndex in
                 print("Button Clicked At Index \(buttonIndex)")
             }
@@ -52,12 +52,27 @@ final class ViewController: UITableViewController {
             let alertView = SwiftAlertView(title: "Lorem ipsum",
                                            message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
                                            buttonTitles: "Button 1", "Button 2", "Button 3", "Cancel")
+            alertView.style = .auto
             alertView.delegate = self
             alertView.cancelButtonIndex = 3
             alertView.buttonTitleColor = UIColor(red: 0.8764, green: 0.5, blue: 0.3352, alpha: 1)
             alertView.show()
-
+            
         case 2:
+            SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "OK") { alertView in
+                alertView.titleLabel.font = .boldSystemFont(ofSize: 16)
+                alertView.addTextField { textField in
+                    textField.placeholder = "Username"
+                }
+                alertView.addTextField { textField in
+                    textField.placeholder = "Password"
+                }
+            }
+            .onButtonClicked { _, buttonIndex in
+                print("Button Clicked At Index \(buttonIndex)")
+            }
+            
+        case 3:
             let alertView = SwiftAlertView(title: "Lorem ipsum",
                                            message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
                                            buttonTitles: ["Cancel", "OK"])
@@ -74,7 +89,7 @@ final class ViewController: UITableViewController {
 
             alertView.show()
 
-        case 3:
+        case 4:
             let view = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
             let label = UILabel(frame: CGRect(x: 20, y: 0, width: 160, height: 200))
             label.text = "This is the custom content view"
@@ -87,18 +102,18 @@ final class ViewController: UITableViewController {
             let alertView = SwiftAlertView(contentView: view, buttonTitles: ["Cancel", "OK"])
             alertView.show()
 
-        case 4:
+        case 5:
             let alertView = SwiftAlertView(nibName: "CustomView", buttonTitles: ["I love this feature"])
             alertView.show()
 
-        case 5:
+        case 6:
             let alertView = SwiftAlertView(title: "Custom Background Image",
                                            message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
                                            buttonTitles: ["Cancel", "Button 1", "Button 2", "Button 3"])
             alertView.backgroundImage = #imageLiteral(resourceName: "alert-box")
             alertView.show()
 
-        case 6:
+        case 7:
             let alertView = SwiftAlertView(title: "Lorem ipsum",
                                            message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
                                            buttonTitles: ["Cancel", "Button 1", "Button 2", "Button 3"])
@@ -107,21 +122,6 @@ final class ViewController: UITableViewController {
             alertView.appearTime = 0.3
             alertView.disappearTime = 0.2
             alertView.show()
-
-        case 7:
-            SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "OK") { alertView in
-                alertView.titleLabel.font = .boldSystemFont(ofSize: 16)
-                alertView.addTextField { textField in
-                    textField.placeholder = "Username"
-                }
-                alertView.addTextField { textField in
-                    textField.placeholder = "Password"
-                }
-            }
-            .onButtonClicked { _, buttonIndex in
-                print("Button Clicked At Index \(buttonIndex)")
-            }
-
         default:
             ()
         }

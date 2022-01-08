@@ -29,6 +29,12 @@
 import UIKit
 
 public class SwiftAlertView: UIView {
+    
+    public enum Style {
+        case auto
+        case light
+        case dark
+    }
 
     public enum AppearType {
         case `default`
@@ -48,6 +54,12 @@ public class SwiftAlertView: UIView {
     // MARK: Public Properties
     
     public weak var delegate: SwiftAlertViewDelegate? // delegate
+    
+    public var style: Style = .auto { // default is base on system color
+        didSet {
+            updateAlertStyle()
+        }
+    }
 
     public var titleLabel: UILabel! // access titleLabel to customize the title font, color
     public var messageLabel: UILabel! // access messageLabel to customize the message font, color
@@ -62,7 +74,7 @@ public class SwiftAlertView: UIView {
     
     public var separatorColor = UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0) // to change the separator color
     public var isHideSeparator = false // to hide the separater color
-    public var cornerRadius: CGFloat = 8.0 // default is 8 px
+    public var cornerRadius: CGFloat = 12.0 // default is 8 px
 
     public var isDismissOnActionButtonClicked = true // default is true, if you want the alert view will not be dismissed when clicking on action buttons, set this property to false
     public var isHighlightOnButtonClicked = true // default is true
@@ -105,7 +117,7 @@ public class SwiftAlertView: UIView {
     private let kDefaultTitleSizeMargin: CGFloat = 20.0
     private let kDefaultMessageSizeMargin: CGFloat = 20.0
     private let kDefaultButtonHeight: CGFloat = 44.0
-    private let kDefaultCornerRadius: CGFloat = 8.0
+    private let kDefaultCornerRadius: CGFloat = 12.0
     private let kDefaultTitleTopMargin: CGFloat = 20.0
     private let kDefaultTitleToMessageSpacing: CGFloat = 10.0
     private let kDefaultMessageBottomMargin: CGFloat = 20.0
@@ -193,6 +205,7 @@ public class SwiftAlertView: UIView {
     
     public func addTextField(configurationHandler: ((UITextField) -> Void)? = nil) {
         let textField = UITextField(frame: CGRect(x: textFieldSideMargin, y: 0, width: viewWidth - textFieldSideMargin * 2, height: textFieldHeight))
+        textField.font = .systemFont(ofSize: 14)
         textField.borderStyle = .roundedRect
         textField.delegate = self
         configurationHandler?(textField)
@@ -555,6 +568,30 @@ extension SwiftAlertView {
         }
     }
     
+    private func updateAlertStyle() {
+        titleLabel.textColor = color(light: .black, dark: .white)
+        messageLabel.textColor = color(light: .black, dark: .white)
+        backgroundColor = color(light: UIColor(white: 0.96, alpha: 1), dark: UIColor(white: 0.16, alpha: 1))
+        separatorColor = color(light: UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0), dark: UIColor(white: 0.4, alpha: 1))
+        
+        for button in buttons {
+            (button as? HighlightButton)?.highlightColor = color(light: UIColor(white: 0.2, alpha: 0.1), dark: UIColor(white: 0.5, alpha: 1))
+        }
+        for textField in textFields {
+            textField.backgroundColor = color(light: .white, dark: UIColor(white: 0.1, alpha: 1))
+            textField.textColor = color(light: .black, dark: .white)
+        }
+        
+        if style == .dark {
+            dimAlpha = 0.4
+            for textField in textFields {
+                textField.layer.borderColor = UIColor(white: 0.4, alpha: 1).cgColor
+                textField.layer.borderWidth = 0.5
+                textField.layer.cornerRadius = 6
+            }
+        }
+    }
+    
     
     // MARK: Actions
     
@@ -691,28 +728,30 @@ extension SwiftAlertView: UITextFieldDelegate {
 }
 
 final class HighlightButton: UIButton {
-    @IBInspectable var isSetBackgroundOnParent: Bool = false {
-        didSet {
-            _isSetBackgroundOnParent = isSetBackgroundOnParent
-        }
-    }
+    var highlightColor = UIColor(white: 0.2, alpha: 0.1)
+    private var bgColor: UIColor = .clear
     
-    var _isSetBackgroundOnParent = false
-
-    private var _view: UIView {
-        _isSetBackgroundOnParent ? (superview ?? self) : self
-    }
-    
-    var bgColor: UIColor = .clear
     override func awakeFromNib() {
         super.awakeFromNib()
-        bgColor = _view.backgroundColor ?? .clear
+        bgColor = backgroundColor ?? .clear
     }
     
     override public var isHighlighted: Bool {
         didSet {
-            let highlightedColor = bgColor == .clear ? UIColor(white: 0.2, alpha: 0.1) : bgColor.withAlphaComponent(0.66)
-            _view.backgroundColor = isHighlighted ? highlightedColor : bgColor
+            let highlightedColor = bgColor == .clear ? highlightColor : bgColor.withAlphaComponent(0.66)
+            backgroundColor = isHighlighted ? highlightedColor : bgColor
+        }
+    }
+}
+
+extension SwiftAlertView {
+    func color(light: UIColor, dark: UIColor) -> UIColor {
+        if #available(iOS 13, *), style == .auto {
+            return UIColor { $0.userInterfaceStyle == .dark ? dark : light }
+        } else if style == .dark {
+            return dark
+        } else {
+            return light
         }
     }
 }
