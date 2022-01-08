@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SwiftAlertView"
-  s.version      = "2.0.1"
+  s.version      = "2.1.0"
   s.summary      = "A powerful customizable Alert View written in Swift."
   s.description  = <<-DESC
                    SwiftAlertView is a powerful customizable Alert View written in Swift. With SwiftAlertView, you can easily make your desired Alert View in some lines of code.

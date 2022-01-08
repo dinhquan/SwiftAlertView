@@ -59,8 +59,7 @@ final class ViewController: UITableViewController {
             alertView.show()
             
         case 2:
-            SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "OK") { alertView in
-                alertView.titleLabel.font = .boldSystemFont(ofSize: 16)
+            SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "Sign In") { alertView in
                 alertView.addTextField { textField in
                     textField.placeholder = "Username"
                 }
@@ -68,8 +67,9 @@ final class ViewController: UITableViewController {
                     textField.placeholder = "Password"
                 }
             }
-            .onButtonClicked { _, buttonIndex in
-                print("Button Clicked At Index \(buttonIndex)")
+            .onButtonClicked { alert, buttonIndex in
+                let username = alert.textField(at: 0)?.text ?? ""
+                print("Username: ", username)
             }
             
         case 3:

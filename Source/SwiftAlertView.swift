@@ -575,7 +575,7 @@ extension SwiftAlertView {
         separatorColor = color(light: UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0), dark: UIColor(white: 0.4, alpha: 1))
         
         for button in buttons {
-            (button as? HighlightButton)?.highlightColor = color(light: UIColor(white: 0.2, alpha: 0.1), dark: UIColor(white: 0.5, alpha: 1))
+            (button as? HighlightButton)?.highlightColor = color(light: UIColor(white: 0.2, alpha: 0.1), dark: UIColor(white: 0.5, alpha: 0.1))
         }
         for textField in textFields {
             textField.backgroundColor = color(light: .white, dark: UIColor(white: 0.1, alpha: 1))

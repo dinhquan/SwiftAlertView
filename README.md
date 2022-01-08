@@ -43,15 +43,17 @@ Drag and drop the file named ```SwiftAlertView``` inside `Source` in your projec
 
 ## Highlight Features
 
-- Initialize the alert view with a custom view.
-- Initialize the alert view with a xib file.
-- Closures and callbacks for handling button touched events.
 - Change the alert appearance: background color or background image, border radius.
 - Change the title appearance: font, color, margin, spacing, visibility.
 - Change the message appearance: font, color, margin, spacing, visibility.
 - Change the button appearance: font, color.
 - Change the separator appearance: color, visibility.
 - Change the alert appear behaviour and disappear behaviour.
+- Add text fields
+- Support dark mode
+- Initialize the alert view with a custom view.
+- Initialize the alert view with a xib file.
+- Closures and callbacks for handling button touched events.
 - And many more ...
 
 ## Usage
@@ -62,15 +64,6 @@ Showing an alert is easy as pie
 
 ```swift
 SwiftAlertView.show(title: "Sample title", message: "Sample message", buttonTitles: "Cancel", "OK")
-```
-
-You can show alert with custom content view
-```swift
-// with xib file
-SwiftAlertView.show(nibName: "CustomView", buttonTitles: "OK")
-
-// with custom UIView
-SwiftAlertView.show(contentView: customView, buttonTitles: "OK")
 ```
 
 Customization
@@ -86,13 +79,43 @@ SwiftAlertView.show(title: "Sample title",
 ```
 
 Handle button clicked events
+
 ```swift
 SwiftAlertView.show(title: "Sample title",
                     message: "Sample message",
-                    buttonTitles: "OK", "Cancel")
-    .onButtonClicked { buttonIndex in
-        print("Button Clicked At Index \(buttonIndex)")
+                    buttonTitles: "OK", "Cancel") {
+    alertView.style = .dark // 
+}
+.onButtonClicked { _, buttonIndex in
+    print("Button Clicked At Index \(buttonIndex)")
+}
+```
+
+Add text fields
+
+```swift
+SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "Sign In") { alertView in
+    alertView.addTextField { textField in
+        textField.placeholder = "Username"
     }
+    alertView.addTextField { textField in
+        textField.placeholder = "Password"
+    }
+}
+.onButtonClicked { alert, buttonIndex in
+    let username = alert.textField(at: 0)?.text ?? ""
+    print("Username: ", username)
+}
+```
+
+You can show alert with custom content view
+
+```swift
+// with xib file
+SwiftAlertView.show(nibName: "CustomView", buttonTitles: "OK")
+
+// with custom UIView
+SwiftAlertView.show(contentView: customView, buttonTitles: "OK")
 ```
 
 ### Programmatically creating an alert
