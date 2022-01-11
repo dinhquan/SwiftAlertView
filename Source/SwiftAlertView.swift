@@ -92,6 +92,10 @@ public class SwiftAlertView: UIView {
     public var textFieldBottomMargin: CGFloat = 15.0
     public var textFieldSpacing: CGFloat = 10.0
     public var isFocusTextFieldWhenShowing = true
+    public var isEnabledValidationLabel = false
+    public var validationLabel: UILabel! // access to validation label to customize font, color
+    public var validationLabelTopMargin: CGFloat = 8.0
+    public var validationLabelSideMargin: CGFloat = 15.0
 
     // closures for handling button clicked action
     public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
@@ -404,7 +408,8 @@ extension SwiftAlertView {
     private func setUpElements() {
         titleLabel = UILabel(frame: .zero)
         messageLabel = UILabel(frame: .zero)
-        
+        validationLabel = UILabel(frame: .zero)
+
         if title != nil {
             titleLabel.text = title
             addSubview(titleLabel)
@@ -450,6 +455,13 @@ extension SwiftAlertView {
             messageLabel.textAlignment = .center
             messageLabel.backgroundColor = .clear
         }
+        
+        validationLabel.text = " "
+        validationLabel.numberOfLines = 0
+        validationLabel.lineBreakMode = .byWordWrapping
+        validationLabel.textColor = .red
+        validationLabel.font = .systemFont(ofSize: 13)
+        validationLabel.textAlignment = .left
         
         var i = 0
         for button in buttons {
@@ -513,7 +525,14 @@ extension SwiftAlertView {
         }
         
         let textFieldPartHeight = textFields.isEmpty ? 0 : (textFields[0].frame.height + textFieldSpacing) * CGFloat(textFields.count) + textFieldBottomMargin - textFieldSpacing
-        let topPartHeight = (contentView == nil) ? (titleMessageHeight + textFieldPartHeight) : contentView!.frame.size.height
+        var topPartHeight = (contentView == nil) ? (titleMessageHeight + textFieldPartHeight) : contentView!.frame.size.height
+        
+        if isEnabledValidationLabel {
+            addSubview(validationLabel)
+            validationLabel.frame = CGRect(x: validationLabelSideMargin, y: topPartHeight + validationLabelTopMargin - textFieldBottomMargin, width: viewWidth - validationLabelSideMargin * 2, height: 0)
+            labelHeightToFit(validationLabel)
+            topPartHeight += validationLabel.frame.height + validationLabelTopMargin
+        }
         
         if buttons.count == 2 {
             viewHeight = topPartHeight + buttonHeight
@@ -609,7 +628,7 @@ extension SwiftAlertView {
         let rect = label.attributedText?.boundingRect(with: CGSize(width: maxWidth, height: maxHeight),
                                                       options: .usesLineFragmentOrigin, context: nil)
         var frame = label.frame
-        frame.size.height = rect!.size.height
+        frame.size.height = rect?.size.height ?? .zero
         label.frame = frame
     }
 }

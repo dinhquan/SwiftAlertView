@@ -66,10 +66,13 @@ final class ViewController: UITableViewController {
                 alertView.addTextField { textField in
                     textField.placeholder = "Password"
                 }
+                alertView.isEnabledValidationLabel = true
+                alertView.isDismissOnActionButtonClicked = false
             }
-            .onButtonClicked { alert, buttonIndex in
+            .onActionButtonClicked { alert, buttonIndex in
                 let username = alert.textField(at: 0)?.text ?? ""
                 print("Username: ", username)
+                alert.validationLabel.text = "Username is incorrect"
             }
             
         case 3:
