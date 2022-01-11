@@ -425,7 +425,7 @@ extension SwiftAlertView {
         }
 
         for buttonTitle in buttonTitles {
-            let button = HighlightButton(type: .custom)
+            let button = _HighlightButton(type: .custom)
             button.setTitle(buttonTitle, for: .normal)
             buttons.append(button)
             addSubview(button)
@@ -489,12 +489,6 @@ extension SwiftAlertView {
         for button in buttons {
             button.tag = i
             i += 1
-
-            if button.tag == cancelButtonIndex {
-                button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
-            } else {
-                button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
-            }
             
             if !buttonTitleColor.isEqual(UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)) {
                 button.setTitleColor(buttonTitleColor, for: .normal)
@@ -573,7 +567,7 @@ extension SwiftAlertView {
         separatorColor = color(light: UIColor(red: 196.0/255, green: 196.0/255, blue: 201.0/255, alpha: 1.0), dark: UIColor(white: 0.4, alpha: 1))
         
         for button in buttons {
-            (button as? HighlightButton)?.highlightColor = color(light: UIColor(white: 0.2, alpha: 0.1), dark: UIColor(white: 0.5, alpha: 0.1))
+            (button as? _HighlightButton)?.highlightColor = color(light: UIColor(white: 0.2, alpha: 0.1), dark: UIColor(white: 0.5, alpha: 0.1))
         }
         for textField in textFields {
             textField.backgroundColor = color(light: .white, dark: UIColor(white: 0.1, alpha: 1))
@@ -725,7 +719,7 @@ extension SwiftAlertView: UITextFieldDelegate {
     }
 }
 
-final class HighlightButton: UIButton {
+final class _HighlightButton: UIButton {
     var highlightColor = UIColor(white: 0.2, alpha: 0.1)
     private var bgColor: UIColor = .clear
     
@@ -753,3 +747,5 @@ extension SwiftAlertView {
         }
     }
 }
+
+
