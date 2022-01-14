@@ -11,8 +11,8 @@ import UIKit
 final class ViewController: UITableViewController {
 
     let demoTitles: [String] = ["Dark Mode",
-                                "More Than Two Buttons",
-                                "Add Text Fields",
+                                "Alert with Text Field",
+                                "More Text Fields & Validation Label",
                                 "Customize Font & Color",
                                 "Custom Content View",
                                 "Init From Nib File",
@@ -30,33 +30,30 @@ final class ViewController: UITableViewController {
 
         switch indexPath.row {
         case 0:
-            let alertView = SwiftAlertView(title: "Lorem ipsum",
-                                           message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-                                           buttonTitles: "Cancel", "Ok")
-            alertView.style = .dark
-            alertView.onButtonClicked = { buttonIndex in
+            SwiftAlertView.show(title: "Lorem ipsum",
+                                message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+                                buttonTitles: "Cancel", "Ok") {
+                $0.style = .dark
+            }
+            .onButtonClicked { _, buttonIndex in
                 print("Button Clicked At Index \(buttonIndex)")
             }
-
-            alertView.onCancelClicked = {
-                print("Cancel Button Clicked")
-            }
-
-            alertView.onActionButtonClicked = { _ in
-                print("Action Button Clicked")
-            }
-
-            alertView.show()
-
+            
         case 1:
-            let alertView = SwiftAlertView(title: "Lorem ipsum",
-                                           message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-                                           buttonTitles: "Button 1", "Button 2", "Button 3", "Cancel")
-            alertView.style = .auto
-            alertView.delegate = self
-            alertView.cancelButtonIndex = 3
-            alertView.buttonTitleColor = UIColor(red: 0.8764, green: 0.5, blue: 0.3352, alpha: 1)
-            alertView.show()
+            SwiftAlertView.show(title: "Title",
+                                message: "Message",
+                                buttonTitles: "Button 1", "Button 2", "Button 3", "Cancel") { alertView in
+                alertView.style = .auto
+                alertView.cancelButtonIndex = 3
+                alertView.buttonTitleColor = UIColor(red: 0.8764, green: 0.5, blue: 0.3352, alpha: 1)
+                alertView.addTextField { textField in
+                    textField.placeholder = "Placeholder"
+                }
+            }
+            .onActionButtonClicked { alert, buttonIndex in
+                let text = alert.textField(at: 0)?.text ?? ""
+                print("Text: ", text)
+            }
             
         case 2:
             SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "Sign In") { alertView in
@@ -71,8 +68,16 @@ final class ViewController: UITableViewController {
             }
             .onActionButtonClicked { alert, buttonIndex in
                 let username = alert.textField(at: 0)?.text ?? ""
-                print("Username: ", username)
-                alert.validationLabel.text = "Username is incorrect"
+                if username.isEmpty {
+                    alert.validationLabel.text = "Username is incorrect"
+                } else {
+                    alert.dismiss()
+                }
+            }
+            .onTextChanged { _, text, index in
+                if index == 0 {
+                    print("Username text changed: ", text ?? "")
+                }
             }
             
         case 3:
@@ -89,7 +94,7 @@ final class ViewController: UITableViewController {
             alertView.button(at: 1)?.setTitleColor(.purple, for: .normal)
             alertView.button(at: 0)?.titleLabel?.font = UIFont(name: "Marker Felt", size: 20)
             alertView.button(at: 1)?.titleLabel?.font = UIFont(name: "Marker Felt", size: 20)
-
+            alertView.delegate = self
             alertView.show()
 
         case 4:

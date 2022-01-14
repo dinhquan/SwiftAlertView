@@ -59,7 +59,18 @@ public class SwiftAlertView: UIView {
     public var backgroundImage: UIImage?
     // public var backgroundColor: UIColor? // inherits from UIView
     
-    public var cancelButtonIndex = 0 // default is 0, set this property if you want to change the position of cancel button
+    public var cancelButtonIndex = 0 { // default is 0, set this property if you want to change the position of cancel button
+        didSet {
+            for i in 0..<buttons.count {
+                let button = buttons[i]
+                if i == cancelButtonIndex {
+                    button.titleLabel?.font = .boldSystemFont(ofSize: button.titleLabel?.font.pointSize ?? 17)
+                } else {
+                    button.titleLabel?.font = .systemFont(ofSize: button.titleLabel?.font.pointSize ?? 17)
+                }
+            }
+        }
+    }
     public var buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1) // to change the title color of all buttons
     public var buttonHeight: CGFloat = 44.0
     
@@ -97,12 +108,7 @@ public class SwiftAlertView: UIView {
     public var validationLabelTopMargin: CGFloat = 8.0
     public var validationLabelSideMargin: CGFloat = 15.0
 
-    // closures for handling button clicked action
-    public var onButtonClicked: ((_ buttonIndex: Int) -> Void)? // all buttons
-    public var onCancelClicked: (() -> Void)? // for cancel button
-    public var onActionButtonClicked: ((_ buttonIndex: Int) -> (Void))? // sometimes you want to handle the action button clicked event but don't want to write if/else in onButtonClicked closure, use this property
-
-
+    
     // MARK: Constants
     
     private let kSeparatorWidth: CGFloat = 0.5
@@ -133,6 +139,11 @@ public class SwiftAlertView: UIView {
     private var viewWidth: CGFloat = 0
     private var viewHeight: CGFloat = 0
     private var isMoveUpWithKeyboard = false
+    
+    private var onButtonClicked: ((_ buttonIndex: Int) -> Void)?
+    private var onCancelClicked: (() -> Void)?
+    private var onActionButtonClicked: ((_ buttonIndex: Int) -> (Void))?
+    private var onTextChanged: ((_ text: String?, _ textFieldIndex: Int) -> Void)?
 
     // MARK: Initialization
 
@@ -202,6 +213,8 @@ public class SwiftAlertView: UIView {
         textField.font = .systemFont(ofSize: 14)
         textField.borderStyle = .roundedRect
         textField.delegate = self
+        textField.tag = textFields.count
+        textField.addTarget(self, action: #selector(textChanged(_:)), for: .editingChanged)
         configurationHandler?(textField)
         textFields.append(textField)
         addSubview(textField)
@@ -337,17 +350,29 @@ public class SwiftAlertView: UIView {
         }
     }
     
-    // handle button click events
-    public func onButtonClicked(_ handler: @escaping (_ alertView: SwiftAlertView, _ buttonIndex: Int) -> Void) {
+    // handle events
+    @discardableResult
+    public func onButtonClicked(_ handler: @escaping (_ alertView: SwiftAlertView, _ buttonIndex: Int) -> Void) -> SwiftAlertView {
         self.onButtonClicked = { index in
             handler(self, index)
         }
+        return self
     }
     
-    public func onActionButtonClicked(_ handler: @escaping (_ alertView: SwiftAlertView, _ buttonIndex: Int) -> Void) {
+    @discardableResult
+    public func onActionButtonClicked(_ handler: @escaping (_ alertView: SwiftAlertView, _ buttonIndex: Int) -> Void) -> SwiftAlertView {
         self.onActionButtonClicked = { index in
             handler(self, index)
         }
+        return self
+    }
+    
+    @discardableResult
+    public func onTextChanged(_ handler: @escaping (_ alertView: SwiftAlertView, _ text: String?, _ textFieldIndex: Int) -> Void) -> SwiftAlertView {
+        self.onTextChanged = { text, index in
+            handler(self, text, index)
+        }
+        return self
     }
 }
 
@@ -611,6 +636,11 @@ extension SwiftAlertView {
         if isDismissOnOutsideTapped {
             dismiss()
         }
+    }
+    
+    @objc private func textChanged(_ textField: UITextField) {
+        let index = textField.tag
+        onTextChanged?(textField.text, index)
     }
     
     
