@@ -14,6 +14,9 @@
 		146BEE6E272930EB0004D971 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 146BEE6C272930EB0004D971 /* LaunchScreen.storyboard */; };
 		146BEE76272931A80004D971 /* CustomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 146BEE75272931A80004D971 /* CustomView.xib */; };
 		146BEE792729328C0004D971 /* SwiftAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146BEE782729328C0004D971 /* SwiftAlertView.swift */; };
+		14B4714B279106A800634E54 /* SwiftAlertView.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 14B47147279106A700634E54 /* SwiftAlertView.podspec */; };
+		14B4714D279106A800634E54 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 14B47149279106A800634E54 /* LICENSE */; };
+		14B4714E279106A800634E54 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 14B4714A279106A800634E54 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +30,9 @@
 		146BEE75272931A80004D971 /* CustomView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomView.xib; sourceTree = "<group>"; };
 		146BEE782729328C0004D971 /* SwiftAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAlertView.swift; sourceTree = "<group>"; };
 		146BEE7A272932F20004D971 /* Marker Felt.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Marker Felt.ttf"; sourceTree = "<group>"; };
+		14B47147279106A700634E54 /* SwiftAlertView.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SwiftAlertView.podspec; sourceTree = "<group>"; };
+		14B47149279106A800634E54 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		14B4714A279106A800634E54 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +49,9 @@
 		146BEE55272930E90004D971 = {
 			isa = PBXGroup;
 			children = (
+				14B47149279106A800634E54 /* LICENSE */,
+				14B4714A279106A800634E54 /* README.md */,
+				14B47147279106A700634E54 /* SwiftAlertView.podspec */,
 				146BEE772729328C0004D971 /* Source */,
 				146BEE60272930E90004D971 /* SwiftAlertView */,
 				146BEE5F272930E90004D971 /* Products */,
@@ -137,8 +146,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14B4714D279106A800634E54 /* LICENSE in Resources */,
 				146BEE6E272930EB0004D971 /* LaunchScreen.storyboard in Resources */,
 				146BEE76272931A80004D971 /* CustomView.xib in Resources */,
+				14B4714E279106A800634E54 /* README.md in Resources */,
+				14B4714B279106A800634E54 /* SwiftAlertView.podspec in Resources */,
 				146BEE6B272930EB0004D971 /* Assets.xcassets in Resources */,
 				146BEE69272930E90004D971 /* Main.storyboard in Resources */,
 			);

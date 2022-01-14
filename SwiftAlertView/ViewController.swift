@@ -43,7 +43,6 @@ final class ViewController: UITableViewController {
             SwiftAlertView.show(title: "Title",
                                 message: "Message",
                                 buttonTitles: "Button 1", "Button 2", "Button 3", "Cancel") { alertView in
-                alertView.style = .auto
                 alertView.cancelButtonIndex = 3
                 alertView.buttonTitleColor = UIColor(red: 0.8764, green: 0.5, blue: 0.3352, alpha: 1)
                 alertView.addTextField { textField in
@@ -58,13 +57,14 @@ final class ViewController: UITableViewController {
         case 2:
             SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "Sign In") { alertView in
                 alertView.addTextField { textField in
-                    textField.placeholder = "Username"
+                    textField.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [.foregroundColor: UIColor.gray])
                 }
                 alertView.addTextField { textField in
-                    textField.placeholder = "Password"
+                    textField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [.foregroundColor: UIColor.gray])
                 }
                 alertView.isEnabledValidationLabel = true
                 alertView.isDismissOnActionButtonClicked = false
+                alertView.style = .dark
             }
             .onActionButtonClicked { alert, buttonIndex in
                 let username = alert.textField(at: 0)?.text ?? ""

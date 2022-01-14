@@ -15,7 +15,7 @@ With `SwiftAlertView`, you can easily make your desired Alert View in some lines
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. To integrate SwiftAlertView into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'SwiftAlertView', '~> 2.2.0'
+pod 'SwiftAlertView', '~> 2.2.1'
 ```
 
 #### Carthage
@@ -23,7 +23,7 @@ pod 'SwiftAlertView', '~> 2.2.0'
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate SwiftAlertView into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "https://github.com/dinhquan/SwiftAlertView" ~> 2.2.0
+github "https://github.com/dinhquan/SwiftAlertView" ~> 2.2.1
 ```
 
 #### Swift Package Manager
@@ -34,7 +34,7 @@ Once you have your Swift package set up, adding SwiftAlertView as a dependency i
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/dinhquan/SwiftAlertView", .upToNextMajor(from: "2.2.0"))
+    .package(url: "https://github.com/dinhquan/SwiftAlertView", .upToNextMajor(from: "2.2.1"))
 ]
 ```
 
@@ -60,14 +60,14 @@ Drag and drop the file named ```SwiftAlertView``` inside `Source` in your projec
 ### Showing an alert
 
 ```swift
-SwiftAlertView.show(title: "Sample title", message: "Sample message", buttonTitles: "Cancel", "OK")
+SwiftAlertView.show(title: "Title", message: "Message", buttonTitles: "Cancel", "OK")
 ```
 
 Customization
 
 ```swift
-SwiftAlertView.show(title: "Sample title",
-                    message: "Sample message",
+SwiftAlertView.show(title: "Title",
+                    message: "Message",
                     buttonTitles: "OK", "Cancel") { alert in
     alert.backgroundColor = .yellow
     alert.cancelButtonIndex = 1
@@ -78,8 +78,8 @@ SwiftAlertView.show(title: "Sample title",
 Handle button clicked events
 
 ```swift
-SwiftAlertView.show(title: "Sample title",
-                    message: "Sample message",
+SwiftAlertView.show(title: "Title",
+                    message: "Message",
                     buttonTitles: "OK", "Cancel") {
     $0.style = .dark
 }
@@ -91,17 +91,28 @@ SwiftAlertView.show(title: "Sample title",
 Add text fields
 
 ```swift
-SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "Sign In") { alert in
-    alert.addTextField { textField in
+SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "Sign In") { alertView in
+    alertView.addTextField { textField in
         textField.placeholder = "Username"
     }
-    alert.addTextField { textField in
+    alertView.addTextField { textField in
         textField.placeholder = "Password"
     }
+    alertView.isEnabledValidationLabel = true
+    alertView.isDismissOnActionButtonClicked = false
 }
 .onActionButtonClicked { alert, buttonIndex in
     let username = alert.textField(at: 0)?.text ?? ""
-    print("Username: ", username)
+    if username.isEmpty {
+        alert.validationLabel.text = "Username is incorrect"
+    } else {
+        alert.dismiss()
+    }
+}
+.onTextChanged { _, text, index in
+    if index == 0 {
+        print("Username text changed: ", text ?? "")
+    }
 }
 ```
 
@@ -120,7 +131,7 @@ SwiftAlertView.show(contentView: customView, buttonTitles: "OK")
 Initialize an alert
 
 ```swift
-let alertView = SwiftAlertView(title: "Sample Title", message: "Sample Message", buttonTitles: "Cancel", "Button 1", "Button 2", "Button 3")
+let alertView = SwiftAlertView(title: "Title", message: "Message", buttonTitles: "Cancel", "Button 1", "Button 2", "Button 3")
 
 let alertView = SwiftAlertView(contentView: customView, buttonTitles: "OK")
 
@@ -218,6 +229,10 @@ public var textFieldSideMargin: CGFloat = 15.0
 public var textFieldBottomMargin: CGFloat = 15.0
 public var textFieldSpacing: CGFloat = 10.0
 public var isFocusTextFieldWhenShowing = true
+public var isEnabledValidationLabel = false
+public var validationLabel: UILabel! // access to validation label to customize font, color
+public var validationLabelTopMargin: CGFloat = 8.0
+public var validationLabelSideMargin: CGFloat = 15.0
 ```
 
 ## Contributing

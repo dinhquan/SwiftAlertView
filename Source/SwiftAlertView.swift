@@ -61,14 +61,7 @@ public class SwiftAlertView: UIView {
     
     public var cancelButtonIndex = 0 { // default is 0, set this property if you want to change the position of cancel button
         didSet {
-            for i in 0..<buttons.count {
-                let button = buttons[i]
-                if i == cancelButtonIndex {
-                    button.titleLabel?.font = .boldSystemFont(ofSize: button.titleLabel?.font.pointSize ?? 17)
-                } else {
-                    button.titleLabel?.font = .systemFont(ofSize: button.titleLabel?.font.pointSize ?? 17)
-                }
-            }
+            updateCancelButtonIndex()
         }
     }
     public var buttonTitleColor = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1) // to change the title color of all buttons
@@ -581,6 +574,17 @@ extension SwiftAlertView {
                     lineView.backgroundColor = separatorColor
                     addSubview(lineView)
                 }
+            }
+        }
+    }
+    
+    private func updateCancelButtonIndex() {
+        for i in 0..<buttons.count {
+            let button = buttons[i]
+            if i == cancelButtonIndex {
+                button.titleLabel?.font = .boldSystemFont(ofSize: button.titleLabel?.font.pointSize ?? 17)
+            } else {
+                button.titleLabel?.font = .systemFont(ofSize: button.titleLabel?.font.pointSize ?? 17)
             }
         }
     }
