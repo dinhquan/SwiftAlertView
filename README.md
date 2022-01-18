@@ -8,11 +8,28 @@ With `SwiftAlertView`, you can easily make your desired Alert View in some lines
 
 ![](https://raw.githubusercontent.com/dinhquan/SwiftAlertView/master/SwiftAlertView/Images/demo.png)
 
+## Highlight Features
+
+| Features  | SwiftAlertView | UIAlertController |
+| - | - | - |
+| Change button color | :white_check_mark: | :white_check_mark: |
+| Change button font | :white_check_mark: | :x: |
+| Change title, message color/font | :white_check_mark: | :x: |
+| Change title, message margin | :white_check_mark: | :x: |
+| Change background color/image | :white_check_mark: | :x: |
+| Change dim background color | :white_check_mark: | :x: |
+| Change border radius, separator color | :white_check_mark: | :x: |
+| Dark mode | :white_check_mark: | :white_check_mark: |
+| Add text fields | :white_check_mark: | :white_check_mark: |
+| Callback for handling text changed | :white_check_mark: | :x:  |
+| Init alert with custom view/xib file | :white_check_mark: | :x:  |
+| TextField Validation Label | :white_check_mark: | :x:  |
+| Customize transtion type | :white_check_mark: | :x:  |
+| Easy-to-use APIs | Super easy | Not so easy |
+
 ## Installation
 
 #### CocoaPods
-
-[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. To integrate SwiftAlertView into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 pod 'SwiftAlertView', '~> 2.2.1'
@@ -20,17 +37,11 @@ pod 'SwiftAlertView', '~> 2.2.1'
 
 #### Carthage
 
-[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate SwiftAlertView into your Xcode project using Carthage, specify it in your `Cartfile`:
-
 ```ogdl
 github "https://github.com/dinhquan/SwiftAlertView" ~> 2.2.1
 ```
 
 #### Swift Package Manager
-
-The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler.
-
-Once you have your Swift package set up, adding SwiftAlertView as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
 
 ```swift
 dependencies: [
@@ -41,23 +52,9 @@ dependencies: [
 #### Manually
 Drag and drop the file named ```SwiftAlertView``` inside `Source` in your project and you are done.
 
-## Highlight Features
-
-- Change the alert background color, background image, border radius.
-- Change the title font, color, margin, visibility.
-- Change the message font, color, margin, visibility.
-- Change the button font, color.
-- Change the alert appearance behaviour.
-- Add text fields (like UIAlertController)
-- Support dark mode
-- Initialize the alert view with a custom view.
-- Initialize the alert view with a xib file.
-- Callbacks for handling button touched events.
-- And many more ...
-
 ## Usage
 
-### Showing an alert
+### Showing alert
 
 ```swift
 SwiftAlertView.show(title: "Title", message: "Message", buttonTitles: "Cancel", "OK")
@@ -80,7 +77,7 @@ Handle button clicked events
 ```swift
 SwiftAlertView.show(title: "Title",
                     message: "Message",
-                    buttonTitles: "OK", "Cancel") {
+                    buttonTitles: "Cancel", "OK") {
     $0.style = .dark
 }
 .onButtonClicked { _, buttonIndex in
@@ -101,16 +98,16 @@ SwiftAlertView.show(title: "Sign in", buttonTitles: "Cancel", "Sign In") { alert
     alertView.isEnabledValidationLabel = true
     alertView.isDismissOnActionButtonClicked = false
 }
-.onActionButtonClicked { alert, buttonIndex in
+.onActionButtonClicked { alertView, buttonIndex in
     let username = alert.textField(at: 0)?.text ?? ""
     if username.isEmpty {
-        alert.validationLabel.text = "Username is incorrect"
+        alertView.validationLabel.text = "Username is incorrect"
     } else {
-        alert.dismiss()
+        alertView.dismiss()
     }
 }
-.onTextChanged { _, text, index in
-    if index == 0 {
+.onTextChanged { _, text, textFieldIndex in
+    if textFieldIndex == 0 {
         print("Username text changed: ", text ?? "")
     }
 }
@@ -155,13 +152,10 @@ Handle button clicked event
 
 ```swift
 
-alertView.onButtonClicked = { buttonIndex in
+alertView.onButtonClicked { _, buttonIndex in
     print("Button Clicked At Index \(buttonIndex)")
 }
-alertView.onCancelButtonClicked = {
-    print("Cancel Button Clicked")
-}
-alertView.onActionButtonClicked = { buttonIndex in
+alertView.onActionButtonClicked { _, buttonIndex in
     print("Action Button Clicked At Index \(buttonIndex)")
 }
 ```
