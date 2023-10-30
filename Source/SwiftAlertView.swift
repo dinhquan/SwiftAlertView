@@ -77,7 +77,8 @@ public class SwiftAlertView: UIView {
     public var isDismissOnOutsideTapped = false
     public var dimAlpha: CGFloat = 0.4
     public var dimBackgroundColor: UIColor? = .init(white: 0, alpha: 0.4)
-
+    public var shouldCreateActionButtonsVertically = false
+    
     public var appearTime = 0.2
     public var disappearTime = 0.1
 
@@ -546,7 +547,8 @@ extension SwiftAlertView {
             topPartHeight += validationLabel.frame.height + validationLabelTopMargin
         }
         
-        if buttons.count == 2 {
+        if buttons.count == 2
+            && shouldCreateActionButtonsVertically == false {
             viewHeight = topPartHeight + buttonHeight
             let leftButton = buttons[0]
             let rightButton = buttons[1]
